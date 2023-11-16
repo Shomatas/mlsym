@@ -6,8 +6,8 @@ namespace App\Domain\User;
 class User
 {
     public function __construct(
-        private string $login,
-        private string $password,
+        private string $login = "paff",
+        private string $password = "1234",
     )
     {
     }

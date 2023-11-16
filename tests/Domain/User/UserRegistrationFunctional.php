@@ -2,7 +2,16 @@
 
 namespace App\Tests\Domain\User;
 
-class UserRegistrationFunctional extends \PHPUnit\Framework\TestCase
+use App\Domain\User\Store\DTO\UserDTO;
+use App\Domain\User\Store\SaveUserInterface;
+use App\Domain\User\User;
+use App\Domain\User\UserRegistration;
+use App\Store\Connection\Db;
+use App\Store\User\GetUser;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+
+
+class UserRegistrationFunctional extends KernelTestCase
 {
 
     /**
@@ -11,18 +20,20 @@ class UserRegistrationFunctional extends \PHPUnit\Framework\TestCase
      */
     public function register(string $login, string $password): void
     {
-        $db = \App\Store\Connection\Db::getInstance();
+        self::bootKernel();
+        $container = static::getContainer();
+        $db = Db::getInstance();
 
-        $userSaver = new \App\Store\User\SaveUser();
-        $userRegistrar = new \App\Domain\User\UserRegistration($userSaver);
-        $user = new \App\Domain\User\User($login, $password);
+        $userSaver = $container->get(SaveUserInterface::class);
+        $userRegistrar = new UserRegistration($userSaver);
+        $user = new User($login, $password);
 
         $lastId = $userRegistrar->register($user);
 
-        $getUser = new \App\Store\User\GetUser();
+        $getUser = new GetUser();
         $userDto = $getUser->get($lastId);
 
-        self::assertInstanceOf(\App\Domain\User\Store\DTO\UserDTO::class, $userDto);
+        self::assertInstanceOf(UserDTO::class, $userDto);
     }
 
     public static function registerDP(): array

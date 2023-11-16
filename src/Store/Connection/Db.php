@@ -25,10 +25,13 @@ class Db
         return self::$instance;
     }
 
-    public function request(string $query, array $data): array
+    public function request(string $query, array $data, bool $isSelectAll = false): array
     {
         $statement = self::$instance->pdo->prepare($query);
         $statement->execute($data);
+        if ($isSelectAll) {
+            return $statement->fetchAll(\PDO::FETCH_NAMED);
+        }
         return $statement->fetch(\PDO::FETCH_NAMED);
     }
 

@@ -6,7 +6,7 @@ use App\Domain\User\Store\DTO\UserDTO;
 use App\Store\Connection\Db;
 use App\Tests\Domain\User\GetUserInterface;
 
-class GetUser implements GetUserInterface
+class GetUser implements GetUserInterface, \App\Domain\User\Store\GetUserInterface
 {
 
     public function get(int $id): UserDTO
@@ -22,5 +22,16 @@ class GetUser implements GetUserInterface
 
         $data = $db->request($query, $data);
         return new UserDTO($data["id"], $data["login"], $data["password"]);
+    }
+
+    public function getAll(): array
+    {
+        $db = Db::getInstance();
+        $tableName = $db::DB_TABLE_USER_NAME;
+
+        $query = "SELECT * FROM {$tableName}";
+        $data = [];
+
+        return $db->request($query, $data, true);
     }
 }

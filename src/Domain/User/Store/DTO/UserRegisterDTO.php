@@ -5,8 +5,8 @@ namespace App\Domain\User\Store\DTO;
 readonly class UserRegisterDTO
 {
     public function __construct(
-        public string $login,
-        public string $password,
+        public string $login = "paff",
+        public string $password = "1234",
     )
     {
 
