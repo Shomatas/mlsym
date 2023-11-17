@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Domain\User\Store\DTO\UserRegisterDTO;
+use App\Domain\User\Factory\UserRegistrationFactory;
+use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\GetUserInterface;
-use App\Domain\User\User;
+use App\Domain\User\Store\SaveUserInterface;
 use App\Domain\User\UserRegistration;
-use App\Store\User\GetUser;
 use App\Store\User\SaveUser;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 class UsersController
 {
     public function __construct(
-        private GetUserInterface $userGetter
+        private GetUserInterface $userGetter,
+        private UserRegistration $userRegistrar,
     )
     {
     }
@@ -31,12 +31,10 @@ class UsersController
 
     #[Route('/users/registration', methods: ['POST'])]
     public function register(
-        #[MapRequestPayload] User $user
+        #[MapRequestPayload] UserDTO $userDto
     ): Response
     {
-        $userSaver = new SaveUser();
-        $userRegistrar = new UserRegistration($userSaver);
-        $userRegistrar->register($user);
+        $this->userRegistrar->register($userDto);
         return new Response("Успешная регистрация", Response::HTTP_CREATED);
     }
 }

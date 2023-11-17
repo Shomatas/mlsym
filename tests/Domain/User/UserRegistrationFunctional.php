@@ -3,11 +3,9 @@
 namespace App\Tests\Domain\User;
 
 use App\Domain\User\Store\DTO\UserDTO;
+use App\Domain\User\Store\GetUserTestInterface;
 use App\Domain\User\Store\SaveUserInterface;
-use App\Domain\User\User;
 use App\Domain\User\UserRegistration;
-use App\Store\Connection\Db;
-use App\Store\User\GetUser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 
@@ -22,15 +20,14 @@ class UserRegistrationFunctional extends KernelTestCase
     {
         self::bootKernel();
         $container = static::getContainer();
-        $db = Db::getInstance();
 
         $userSaver = $container->get(SaveUserInterface::class);
         $userRegistrar = new UserRegistration($userSaver);
-        $user = new User($login, $password);
+        $user = new UserDTO(0, $login, $password);
 
         $lastId = $userRegistrar->register($user);
 
-        $getUser = new GetUser();
+        $getUser = $container->get(GetUserTestInterface::class);
         $userDto = $getUser->get($lastId);
 
         self::assertInstanceOf(UserDTO::class, $userDto);

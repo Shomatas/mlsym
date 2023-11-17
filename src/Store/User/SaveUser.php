@@ -15,8 +15,8 @@ class SaveUser implements SaveUserInterface
         $tableName = Db::DB_TABLE_USER_NAME;
         $query = "INSERT INTO {$tableName} (login, password) VALUES (:login, :password)";
         $data = [
-            "login" => $dto->login,
-            "password" => $dto->password,
+            "login" => $dto->userDTO->login,
+            "password" => $dto->userDTO->password,
         ];
         $db->request($query, $data);
         return $db->getLastInsertId();

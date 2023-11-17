@@ -3,10 +3,11 @@
 namespace App\Store\User;
 
 use App\Domain\User\Store\DTO\UserDTO;
+use App\Domain\User\Store\GetUserInterface;
+use App\Domain\User\Store\GetUserTestInterface;
 use App\Store\Connection\Db;
-use App\Tests\Domain\User\GetUserInterface;
 
-class GetUser implements GetUserInterface, \App\Domain\User\Store\GetUserInterface
+class GetUser implements GetUserTestInterface, GetUserInterface
 {
 
     public function get(int $id): UserDTO
