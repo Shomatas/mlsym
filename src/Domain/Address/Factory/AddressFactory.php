@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Domain\Address\Store\Factory;
+namespace App\Domain\Address\Factory;
 
 use App\Domain\Address\Address;
+use App\Domain\Address\Exception\AddressFactoryException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddressFactory
@@ -19,7 +20,7 @@ class AddressFactory
         $result = $this->validator->validate($createAddressDto->addressDto);
 
         if ($result->count() > 0) {
-            throw new \Exception("Валидация не пройдена");
+            throw new AddressFactoryException("Валидация не пройдена");
         }
 
         return new Address(

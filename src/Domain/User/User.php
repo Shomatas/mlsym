@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Uuid;
 class User
 {
     public function __construct(
-        private Uuid $id,
+        private ?Uuid $id,
         private Address $address,
         private Profile $profile,
         private string $login = "",
@@ -18,6 +18,16 @@ class User
         private string $phone = "",
     )
     {
+    }
+
+    public function getProfile(): Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(Profile $profile): void
+    {
+        $this->profile = $profile;
     }
     public function getId(): Uuid
     {
@@ -37,36 +47,6 @@ class User
     public function setAddress(Address $address): void
     {
         $this->address = $address;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): void
-    {
-        $this->lastName = $lastName;
-    }
-
-    public function getAge(): int
-    {
-        return $this->age;
-    }
-
-    public function setAge(int $age): void
-    {
-        $this->age = $age;
     }
 
     public function getEmail(): string

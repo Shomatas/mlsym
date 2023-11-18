@@ -2,8 +2,23 @@
 
 namespace App\Domain\User;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Profile
 {
+    public function __construct(
+        #[Assert\NotBlank]
+        private string $firstName = "",
+        #[Assert\NotBlank]
+        private string $lastName = "",
+        #[Assert\NotBlank]
+        private int $age = 0,
+
+        private string $avatar = "",
+    )
+    {
+
+    }
     public function getFirstName(): string
     {
         return $this->firstName;
@@ -42,14 +57,5 @@ class Profile
     public function setAvatar(string $avatar): void
     {
         $this->avatar = $avatar;
-    }
-    public function __construct(
-        private string $firstName = "",
-        private string $lastName = "",
-        private int $age = 0,
-        private string $avatar = "",
-    )
-    {
-
     }
 }

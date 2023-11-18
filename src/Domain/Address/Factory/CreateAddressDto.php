@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Address\Store\Factory;
+namespace App\Domain\Address\Factory;
 
 use App\Domain\Address\Store\DTO\AddressDto;
 

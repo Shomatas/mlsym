@@ -3,6 +3,8 @@
 namespace App\Domain\User\Store\DTO;
 
 use App\Domain\Address\Address;
+use App\Domain\User\Profile;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class UserDTO
@@ -12,19 +14,15 @@ readonly class UserDTO
         public Address $address,
 
         #[Assert\NotBlank]
+        public Profile $profile,
+
+        public ?Uuid $id = null,
+
+        #[Assert\NotBlank]
         public string $login = "",
 
         #[Assert\NotBlank]
         public string $password = "",
-
-        #[Assert\NotBlank]
-        public string $firstName = "",
-
-        #[Assert\NotBlank]
-        public string $lastName = "",
-
-        #[Assert\NotBlank]
-        public int $age = 0,
 
         #[Assert\Email()]
         #[Assert\NotBlank]

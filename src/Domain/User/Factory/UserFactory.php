@@ -2,8 +2,9 @@
 
 namespace App\Domain\User\Factory;
 
+use App\Domain\User\Exception\UserValidationException;
 use App\Domain\User\User;
-use Symfony\Component\Validator\Validation;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserFactory
@@ -17,15 +18,20 @@ class UserFactory
 
     public function create(CreateUserDto $createUserDto): User
     {
-        $this->validator->validate($createUserDto->userDto);
+        $result = $this->validator->validate($createUserDto->userDto);
+
+        if ($result->count() > 0) {
+            throw new UserValidationException("Провалена валидация пользователя");
+        }
+
+        $id = Uuid::v1();
 
         return new User(
+            $id,
             $createUserDto->userDto->address,
+            $createUserDto->userDto->profile,
             $createUserDto->userDto->login,
             $createUserDto->userDto->password,
-            $createUserDto->userDto->firstName,
-            $createUserDto->userDto->lastName,
-            $createUserDto->userDto->age,
             $createUserDto->userDto->email,
             $createUserDto->userDto->phone,
         );
