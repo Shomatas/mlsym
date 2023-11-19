@@ -13,8 +13,11 @@ class SaveUser implements SaveUserInterface
     {
         $db = Db::getInstance();
         $tableName = Db::DB_TABLE_USER_NAME;
-        $query = "INSERT INTO {$tableName} (login, password) VALUES (:login, :password)";
+        $query = "INSERT INTO {$tableName} 
+                    (id, login, password, firstname, lastname, age, email, phone) 
+                    VALUES (:id, :login, :password, :firstname, :lastname, :age, :email, :phone)";
         $data = [
+            "id" => $dto->userDTO->id,
             "login" => $dto->userDTO->login,
             "password" => $dto->userDTO->password,
         ];
