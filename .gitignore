@@ -10,3 +10,11 @@
 ###< symfony/framework-bundle ###
 
 .idea/
+
+###> phpunit/phpunit ###
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+###< symfony/phpunit-bridge ###
