@@ -2,26 +2,24 @@
 
 namespace App\Store\User;
 
-use App\Store\Connection\Db;
+use App\Entity\Users;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\SaveUserInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SaveUser implements SaveUserInterface
 {
 
-    public function save(UserRegisterDTO $dto): int
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+    )
     {
-        $db = Db::getInstance();
-        $tableName = Db::DB_TABLE_USER_NAME;
-        $query = "INSERT INTO {$tableName} 
-                    (id, login, password, firstname, lastname, age, email, phone) 
-                    VALUES (:id, :login, :password, :firstname, :lastname, :age, :email, :phone)";
-        $data = [
-            "id" => $dto->userDTO->id,
-            "login" => $dto->userDTO->login,
-            "password" => $dto->userDTO->password,
-        ];
-        $db->request($query, $data);
-        return $db->getLastInsertId();
+    }
+
+    public function save(UserRegisterDTO $dto): void
+    {
+        $productEntity = Users::createFromUserDTO($dto->userDTO);
+        $this->entityManager->persist($productEntity);
+        $this->entityManager->flush();
     }
 }

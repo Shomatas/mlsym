@@ -8,7 +8,6 @@ interface SaveUserInterface
 {
     /**
      * @param UserRegisterDTO $dto
-     * @return int Возвращает id нового объекта
      */
-    public function save(UserRegisterDTO $dto): int;
+    public function save(UserRegisterDTO $dto): void;
 }

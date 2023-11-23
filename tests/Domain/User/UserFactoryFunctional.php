@@ -6,6 +6,7 @@ use App\Domain\Address\Address;
 use App\Domain\Address\Factory\AddressFactory;
 use App\Domain\Address\Factory\CreateAddressDto;
 use App\Domain\Address\Store\DTO\AddressDto;
+use App\Domain\User\Avatar;
 use App\Domain\User\Exception\UserValidationException;
 use App\Domain\User\Factory\CreateUserDto;
 use App\Domain\User\Factory\UserFactory;
@@ -13,6 +14,7 @@ use App\Domain\User\Profile;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserFactoryFunctional extends KernelTestCase
@@ -21,11 +23,10 @@ class UserFactoryFunctional extends KernelTestCase
      * @test
      * @dataProvider createDataProvider
      */
-    public function create(UserDTO $userDto): void
+    public function create(CreateUserDto $createUserDto): void
     {
         self::bootKernel();
         $container = static::getContainer();
-        $createUserDto = new CreateUserDto($userDto);
 
         $userFactory = new UserFactory($container->get(ValidatorInterface::class));
         $user = $userFactory->create($createUserDto);
@@ -37,14 +38,21 @@ class UserFactoryFunctional extends KernelTestCase
     {
 
         return [
-            [new UserDTO(
-                address: self::getAddress("Russia", "Kaluga", "Suvorova", "121a"),
-                profile: new Profile("Ivan", "Komarov", 22),
-                login: "paff",
-                password: "1234",
-                email: "vano2001komarov@mail.ru",
-                phone: "",
-            )]
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
         ];
     }
 
@@ -52,12 +60,11 @@ class UserFactoryFunctional extends KernelTestCase
      * @test
      * @dataProvider createNegativeDataProvider
      */
-    public function negativeCreate($userDto): void
+    public function negativeCreate(CreateUserDto $createUserDto): void
     {
         self::expectException(UserValidationException::class);
         self::bootKernel();
         $container = static::getContainer();
-        $createUserDto = new CreateUserDto($userDto);
 
         $userFactory = new UserFactory($container->get(ValidatorInterface::class));
         $userFactory->create($createUserDto);
@@ -67,39 +74,141 @@ class UserFactoryFunctional extends KernelTestCase
     {
 
         return [
-            [new UserDTO(
-                address: self::getAddress("Russia", "Kaluga", "Suvorova", "121a"),
-                profile: new Profile("Ivan", "Komarov", 22),
-                login: "",
-                password: "1234",
-                email: "vano2001komarov@mail.ru",
-                phone: "8111111111",
-            )],
-
-            [new UserDTO(
-                address: self::getAddress("Russia", "Kaluga", "Suvorova", "121a"),
-                profile: new Profile("Ivan", "Komarov", 22),
-                login: "paff",
-                password: "1234",
-                email: "vano2001komarovmail.ru",
-                phone: "8111111111",
-            )]
+            [
+                new CreateUserDto(
+                    "",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarovmail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("", 'image/gif')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", '')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
+            [
+                new CreateUserDto(
+                    "paff",
+                    "1234",
+                    new Profile(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                        new Avatar("20210505175821!NyanCat.gif", 'image/bmp')
+                    ),
+                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "80000000000",
+                )
+            ],
         ];
-    }
-
-    private static function getAddress(
-        string $country,
-        string $city,
-        string $street,
-        string $houseNumber
-    ): Address
-    {
-        self::bootKernel();
-        $container = static::getContainer();
-        $validator = $container->get(ValidatorInterface::class);
-        $addressFactory = new AddressFactory($validator);
-        $addressDto = new AddressDto($country, $city, $street, $houseNumber);
-        $createAddressDto = new CreateAddressDto($addressDto);
-        return $addressFactory->create($createAddressDto);
     }
 }

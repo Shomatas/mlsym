@@ -8,35 +8,35 @@ class Profile
 {
     public function __construct(
         #[Assert\NotBlank]
-        private string $firstName = "",
+        private string $firstname = "",
         #[Assert\NotBlank]
-        private string $lastName = "",
+        private string $lastname = "",
         #[Assert\NotBlank]
         private int $age = 0,
 
-        private string $avatar = "",
+        private ?Avatar $avatar = null,
     )
     {
 
     }
     public function getFirstName(): string
     {
-        return $this->firstName;
+        return $this->firstname;
     }
 
     public function setFirstName(string $firstName): void
     {
-        $this->firstName = $firstName;
+        $this->firstname = $firstName;
     }
 
     public function getLastName(): string
     {
-        return $this->lastName;
+        return $this->lastname;
     }
 
     public function setLastName(string $lastName): void
     {
-        $this->lastName = $lastName;
+        $this->lastname = $lastName;
     }
 
     public function getAge(): int
@@ -49,12 +49,12 @@ class Profile
         $this->age = $age;
     }
 
-    public function getAvatar(): string
+    public function getAvatar(): ?Avatar
     {
         return $this->avatar;
     }
 
-    public function setAvatar(string $avatar): void
+    public function setAvatar(?Avatar $avatar): void
     {
         $this->avatar = $avatar;
     }

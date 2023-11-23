@@ -10,10 +10,10 @@ class User
 {
     public function __construct(
         private ?Uuid $id,
-        private Address $address,
-        private Profile $profile,
         private string $login = "",
         private string $password = "",
+        private ?Profile $profile = null,
+        private ?Address $address = null,
         private string $email = "",
         private string $phone = "",
     )

@@ -15,9 +15,9 @@ class UserRegistration
     {
 
     }
-    public function register(UserDTO $userDto): int
+    public function register(UserRegisterDTO $dto): void
     {
-        $dto = new UserRegisterDTO($userDto);
-        return $this->userSaver->save($dto);
+        move_uploaded_file($dto->tempPathAvatar, $dto->getPathToAvatar());
+        $this->userSaver->save($dto);
     }
 }
