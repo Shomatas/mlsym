@@ -7,11 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Avatar
 {
     public function __construct(
-        #[Assert\NotBlank]
         private string $pathToFile = "",
-        #[Assert\NotBlank()]
-        #[Assert\Regex("/^image\/(jpeg|png|gif)$/")]
-        private string $mimeType = "",
     )
     {
 
@@ -22,9 +18,9 @@ class Avatar
         return $this->pathToFile;
     }
 
-    public function getMimeType(): string
+    public function setPathToFile(string $pathToFile): void
     {
-        return $this->mimeType;
+        $this->pathToFile = $pathToFile;
     }
 
 

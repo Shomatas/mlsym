@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Domain\User\Avatar;
-use App\Domain\User\Factory\CreateUserDto;
-use App\Domain\User\Factory\UserFactory;
+use App\Controller\User\UserRegisterRequestDto;
+use App\Domain\Address\Address;
+use App\Domain\User\Profile;
 use App\Domain\User\Store\DTO\AvatarDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
@@ -21,7 +21,6 @@ class UsersController
     public function __construct(
         private GetUserInterface $userGetter,
         private UserRegistration $userRegistrar,
-        private UserFactory $userFactory,
         private UserCollectionDtoMapperInterface $userCollectionDtoMapper,
     )
     {
@@ -40,20 +39,23 @@ class UsersController
 
     #[Route('/users/registration', methods: ['POST'])]
     public function register(
-        #[MapRequestPayload] CreateUserDto $dto,
-            Request $request,
+        #[MapRequestPayload] UserRegisterRequestDto $dto,
+        Request $request,
     ): Response
     {
         $avatar = $request->files->get("avatar");
-        $avatarDto = new AvatarDto(
-            "images/" . $avatar->getFilename() . $avatar->getClientOriginalName(),
+
+        $userRegisterDto = new UserRegisterDTO(
+            $dto->login,
+            $dto->password,
+            new Profile($dto->profile->firstname, $dto->profile->lastname, $dto->profile->age),
+            new Address($dto->address->country, $dto->address->city, $dto->address->street, $dto->address->houseNumber),
+            $dto->email,
+            $dto->phone,
+            $avatar->getRealpath(),
             $avatar->getClientMimeType(),
         );
 
-        $user = $this->userFactory->create($dto, $avatarDto);
-        $userDto = UserDTO::createFromUser($user);
-
-        $userRegisterDto = new UserRegisterDTO($userDto, $avatar->getPath() . '/' . $avatar->getFilename());
         $this->userRegistrar->register($userRegisterDto);
         return new Response("Успешная регистрация", Response::HTTP_CREATED);
     }

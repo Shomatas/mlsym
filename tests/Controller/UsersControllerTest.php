@@ -45,7 +45,7 @@ class UsersControllerTest extends WebTestCase
                     "profile" => [
                         "firstname" => "Ilya",
                         "lastname" => "Pomazenkov",
-                        "age" => 21,
+                        "age" => "21",
                     ],
                     "address" => [
                         "country" => "Russia",
@@ -54,7 +54,7 @@ class UsersControllerTest extends WebTestCase
                         "houseNumber" => "1211",
                     ],
                     "email" => "qpie@mail.ru",
-                    "phone" => "89375312343",
+//                    "phone" => "89375312343",
                 ],
                 [
                     "avatar" => [

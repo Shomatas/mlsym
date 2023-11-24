@@ -13,7 +13,6 @@ class Profile
         private string $lastname = "",
         #[Assert\NotBlank]
         private int $age = 0,
-
         private ?Avatar $avatar = null,
     )
     {

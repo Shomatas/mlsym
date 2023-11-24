@@ -30,7 +30,7 @@ readonly class UserDTO
         #[Assert\NotBlank]
         public string $email = "",
 
-        public string $phone = "",
+        public ?string $phone = null,
     )
     {
 

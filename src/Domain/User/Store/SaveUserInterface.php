@@ -2,12 +2,9 @@
 
 namespace App\Domain\User\Store;
 
-use App\Domain\User\Store\DTO\UserRegisterDTO;
+use App\Domain\User\Store\DTO\UserDTO;
 
 interface SaveUserInterface
 {
-    /**
-     * @param UserRegisterDTO $dto
-     */
-    public function save(UserRegisterDTO $dto): void;
+    public function save(UserDTO $dto): void;
 }

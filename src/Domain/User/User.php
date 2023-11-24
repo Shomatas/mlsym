@@ -15,7 +15,7 @@ class User
         private ?Profile $profile = null,
         private ?Address $address = null,
         private string $email = "",
-        private string $phone = "",
+        private ?string $phone = null,
     )
     {
     }
@@ -59,12 +59,12 @@ class User
         $this->email = $email;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function setPhone(string $phone): void
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
     }

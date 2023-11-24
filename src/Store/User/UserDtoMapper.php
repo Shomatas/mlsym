@@ -20,7 +20,6 @@ class UserDtoMapper implements UserDtoMapperInterface
                 "age" => $userDTO->profile->getAge(),
                 "avatar" => [
                     "path_to_avatar" => $userDTO->profile->getAvatar()->getPathToFile(),
-                    "avatar_mime_type" => $userDTO->profile->getAvatar()->getMimeType(),
                 ],
             ],
             "address" => [

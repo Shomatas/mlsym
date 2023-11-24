@@ -52,7 +52,7 @@ class Users
     private ?string $houseNumber = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $avatarMimeType = null;
+    private ?string $avatarMimeType = "null";
 
     public function __construct(
         ?Uuid $id,
@@ -62,7 +62,6 @@ class Users
         ?string $lastname,
         ?int $age,
         ?string $pathToAvatar,
-        ?string $avatarMimeType,
         ?string $email,
         ?string $phone,
         ?string $country,
@@ -78,7 +77,6 @@ class Users
         $this->lastname = $lastname;
         $this->age = $age;
         $this->pathToAvatar = $pathToAvatar;
-        $this->avatarMimeType = $avatarMimeType;
         $this->email = $email;
         $this->phone = $phone;
         $this->country = $country;
@@ -98,7 +96,6 @@ class Users
             $userDTO->profile->getLastName(),
             $userDTO->profile->getAge(),
             $userDTO->profile->getAvatar()->getPathToFile(),
-            $userDTO->profile->getAvatar()->getMimeType(),
             $userDTO->email,
             $userDTO->phone,
             $userDTO->address->getCountry(),

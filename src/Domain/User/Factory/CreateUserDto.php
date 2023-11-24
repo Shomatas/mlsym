@@ -15,13 +15,17 @@ readonly class CreateUserDto
         public string $login = "",
         #[Assert\NotBlank]
         public string $password = "",
+        #[Assert\NotBlank]
         public ?Profile $profile = null,
-
+        #[Assert\NotBlank]
         public ?Address $address = null,
         #[Assert\NotBlank]
         #[Assert\Email]
         public string $email = "",
         public ?string $phone = null,
+        public ?string $pathTempFileAvatar = "",
+        #[Assert\Regex("/^image\/(jpeg|png|gif)$/")]
+        public ?string $avatarMimeType = "",
     )
     {
 
