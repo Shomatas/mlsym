@@ -2,12 +2,19 @@
 
 namespace App\Domain\Address\Factory;
 
-use App\Domain\Address\Store\DTO\AddressDto;
+use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class CreateAddressDto
 {
     public function __construct(
-        public AddressDto $addressDto,
+        #[Assert\NotBlank]
+        public string $country = "",
+        #[Assert\NotBlank]
+        public string $city = "",
+        #[Assert\NotBlank]
+        public string $street = "",
+        #[Assert\NotBlank]
+        public string $houseNumber = "",
     )
     {
 

@@ -14,7 +14,7 @@ class UsersControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/users');
+        $response = $client->request('GET', '/users');
 
         $this->assertResponseStatusCodeSame(200);
     }
@@ -40,7 +40,7 @@ class UsersControllerTest extends WebTestCase
         return [
             [
                 [
-                    "login" => "qpie",
+                    "login" => "paff",
                     "password" => "1234",
                     "profile" => [
                         "firstname" => "Ilya",
@@ -54,7 +54,7 @@ class UsersControllerTest extends WebTestCase
                         "houseNumber" => "1211",
                     ],
                     "email" => "qpie@mail.ru",
-//                    "phone" => "89375312343",
+                    "phone" => "+7(937)-531-23-43",
                 ],
                 [
                     "avatar" => [

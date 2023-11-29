@@ -5,8 +5,11 @@ RUN apt update && \
     apt install git -y && \
     docker-php-ext-install pdo pdo_pgsql pgsql && \
     curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash && \
-    apt install symfony-cli
+    apt install symfony-cli -y;
 
+RUN apt install -y libicu-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl;
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer;
 

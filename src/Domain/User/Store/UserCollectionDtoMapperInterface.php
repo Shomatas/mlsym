@@ -2,11 +2,11 @@
 
 namespace App\Domain\User\Store;
 
-use App\Domain\User\Store\DTO\UserCollectionDTO;
+use App\Domain\User\Store\DTO\Collection\UserDtoCollection;
 
 interface UserCollectionDtoMapperInterface
 {
-    public function mapFromArray(array $data): UserCollectionDTO;
-    public function mapToArray(UserCollectionDTO $collectionDTO): array;
-    public function mapToJson(UserCollectionDTO $collectionDTO): string;
+    public function mapFromArray(array $data): UserDtoCollection;
+    public function mapToArray(UserDtoCollection $collectionDTO): array;
+    public function mapToJson(UserDtoCollection $collectionDTO): string;
 }

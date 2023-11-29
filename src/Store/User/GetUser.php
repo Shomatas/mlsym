@@ -3,13 +3,14 @@
 namespace App\Store\User;
 
 use App\Domain\Address\Address;
+use App\Domain\Address\Store\DTO\AddressDto;
 use App\Domain\User\Avatar;
 use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\UserCollectionDTO;
+use App\Domain\User\Store\DTO\Collection\UserDtoCollection;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\GetUserTestInterface;
-use App\Entity\Users;
+use App\Store\Connection\Entity\Users;
 use App\Store\Connection\UserEntityCollectionMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
@@ -36,16 +37,24 @@ class GetUser implements GetUserTestInterface, GetUserInterface
                 $userData->getAge(),
                 new Avatar($userData->getPathToAvatar(), $userData->getAvatarMimeType())
             ),
-            new Address($userData->getCountry(), $userData->getCity(), $userData->getStreet(), $userData->getHouseNumber()),
+            new AddressDto($userData->getCountry(), $userData->getCity(), $userData->getStreet(), $userData->getHouseNumber()),
             $userData->getEmail(),
             $userData->getPhone(),
         );
     }
 
-    public function getAll(): UserCollectionDTO
+    public function getAll(): UserDtoCollection
     {
         $collection = $this->entityManager->getRepository(Users::class)->findAll();
         $data = $this->userEntityCollectionMapper->mapToArray($collection);
         return $this->userCollectionDtoMapper->mapFromArray($data);
+    }
+
+    public function getLast(): UserDTO
+    {
+        $collection = $this->entityManager->getRepository(Users::class)->findAll();
+        $data = $this->userEntityCollectionMapper->mapToArray($collection);
+        $collection = $this->userCollectionDtoMapper->mapFromArray($data);
+        return $collection[$collection->count() - 1];
     }
 }

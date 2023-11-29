@@ -7,11 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Profile
 {
     public function __construct(
-        #[Assert\NotBlank]
         private string $firstname = "",
-        #[Assert\NotBlank]
         private string $lastname = "",
-        #[Assert\NotBlank]
         private int $age = 0,
         private ?Avatar $avatar = null,
     )

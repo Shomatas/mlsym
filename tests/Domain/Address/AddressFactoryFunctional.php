@@ -14,10 +14,9 @@ class AddressFactoryFunctional extends KernelTestCase
      * @test
      * @dataProvider createDataProvider
      */
-    public function create(AddressDto $addressDto): void
+    public function create(CreateAddressDto $createAddressDto): void
     {
         self::bootKernel();
-        $createAddressDto = new CreateAddressDto($addressDto);
 
         $container = static::getContainer();
         $addressFactory = $container->get(AddressFactory::class);
@@ -30,7 +29,7 @@ class AddressFactoryFunctional extends KernelTestCase
     public static function createDataProvider(): array
     {
         return [
-            [new AddressDto("Russia", "Kaluga", "Suvorova", "121a")],
+            [new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a")],
         ];
     }
 
@@ -38,12 +37,11 @@ class AddressFactoryFunctional extends KernelTestCase
      * @test
      * @dataProvider negativeCreateDataProvider
      */
-    public function negativeCreate(AddressDto $addressDto): void
+    public function negativeCreate(CreateAddressDto $createAddressDto): void
     {
         self::expectException(\Exception::class);
 
         self::bootKernel();
-        $createAddressDto = new CreateAddressDto($addressDto);
 
         $container = static::getContainer();
         $addressFactory = $container->get(AddressFactory::class);
@@ -54,10 +52,10 @@ class AddressFactoryFunctional extends KernelTestCase
     public static function negativeCreateDataProvider(): array
     {
         return [
-            [new AddressDto("", "Kaluga", "Suvorova", "121a")],
-            [new AddressDto("Russia", "", "Suvorova", "121a")],
-            [new AddressDto("Russia", "Kaluga", "", "121a")],
-            [new AddressDto("Russia", "Kaluga", "Suvorova", "")],
+            [new CreateAddressDto("", "Kaluga", "Suvorova", "121a")],
+            [new CreateAddressDto("Russia", "", "Suvorova", "121a")],
+            [new CreateAddressDto("Russia", "Kaluga", "", "121a")],
+            [new CreateAddressDto("Russia", "Kaluga", "Suvorova", "")],
         ];
     }
 }

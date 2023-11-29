@@ -17,7 +17,6 @@ class UserEntityCollectionMapper
                     "lastname" => $userEntity->getLastname(),
                     "age" => $userEntity->getAge(),
                     "avatar" => [
-                        "path_to_avatar" => $userEntity->getPathToAvatar(),
                         "avatar_mime_type" => $userEntity->getAvatarMimeType(),
                     ]
                 ],

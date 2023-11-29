@@ -4,8 +4,12 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\Address\Address;
 use App\Domain\User\Avatar;
+use App\Domain\User\Factory\UserFactory;
 use App\Domain\User\Profile;
+use App\Domain\User\Store\DTO\AddressRegisterDto;
+use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\Domain\User\Store\DTO\UserDTO;
+use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\GetUserTestInterface;
 use App\Domain\User\Store\SaveUserInterface;
 use App\Domain\User\UserRegistration;
@@ -20,18 +24,19 @@ class UserRegistrationFunctional extends KernelTestCase
      * @test
      * @dataProvider registerDP
      */
-    public function register(UserDTO $userDTO): void
+    public function register(UserRegisterDTO $userRegisterDTO): void
     {
         self::bootKernel();
         $container = static::getContainer();
 
         $userSaver = $container->get(SaveUserInterface::class);
-        $userRegistrar = new UserRegistration($userSaver);
+        $userFactory = $container->get(UserFactory::class);
+        $userRegistrar = new UserRegistration($userSaver, $userFactory);
 
-        $userRegistrar->register($userDTO);
+        $userRegistrar->register($userRegisterDTO);
 
         $getUser = $container->get(GetUserTestInterface::class);
-        $userDto = $getUser->get($userDTO->id);
+        $userDto = $getUser->getLast();
 
         self::assertInstanceOf(UserDTO::class, $userDto);
     }
@@ -39,20 +44,22 @@ class UserRegistrationFunctional extends KernelTestCase
     public static function registerDP(): array
     {
         return [
-            [new UserDTO(
-                Uuid::v1(),
-                "paff",
-                "1234",
-                new Profile(
-                    "Ivan",
-                    "Komarov",
-                    22,
-                    new Avatar("images/20210505175821!NyanCat.gif", 'image/gif')
-                ),
-                new Address("Russia", "Kaluga", "Suvorova", "121a"),
-                "vano2001komarov@mail.ru",
-                "",
-            )]
+            [
+                new UserRegisterDTO(
+                    "paff",
+                    "1234",
+                    new ProfileRegisterDto(
+                        "Ivan",
+                        "Komarov",
+                        22,
+                    ),
+                    new AddressRegisterDto("Russia", "Kaluga", "Suvorova", "121a"),
+                    "vano2001komarov@mail.ru",
+                    "89371260827",
+                    __DIR__ . "/../../Controller/resources/testfile",
+                    "image/png",
+                )
+            ]
         ];
     }
 }

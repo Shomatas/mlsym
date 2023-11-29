@@ -5,16 +5,15 @@ namespace App\Tests\Domain\User;
 use App\Domain\Address\Address;
 use App\Domain\Address\Factory\AddressFactory;
 use App\Domain\Address\Factory\CreateAddressDto;
-use App\Domain\Address\Store\DTO\AddressDto;
 use App\Domain\User\Avatar;
 use App\Domain\User\Exception\UserValidationException;
-use App\Domain\User\Factory\CreateUserDto;
+use App\Domain\User\Factory\DTO\CreateProfileDto;
+use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Factory\UserFactory;
 use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\UserDTO;
+use App\Domain\User\Store\SaveFileInterface;
 use App\Domain\User\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserFactoryFunctional extends KernelTestCase
@@ -28,7 +27,11 @@ class UserFactoryFunctional extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
 
-        $userFactory = new UserFactory($container->get(ValidatorInterface::class));
+        $userFactory = new UserFactory(
+            $container->get(ValidatorInterface::class),
+            $container->get(SaveFileInterface::class),
+            $container->get(AddressFactory::class),
+        );
         $user = $userFactory->create($createUserDto);
 
         self::assertInstanceOf(User::class, $user);
@@ -42,15 +45,16 @@ class UserFactoryFunctional extends KernelTestCase
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
-                    "80000000000",
+                    null,
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
         ];
@@ -66,7 +70,11 @@ class UserFactoryFunctional extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
 
-        $userFactory = new UserFactory($container->get(ValidatorInterface::class));
+        $userFactory = new UserFactory(
+            $container->get(ValidatorInterface::class),
+            $container->get(SaveFileInterface::class),
+            $container->get(AddressFactory::class),
+        );
         $userFactory->create($createUserDto);
     }
 
@@ -78,135 +86,112 @@ class UserFactoryFunctional extends KernelTestCase
                 new CreateUserDto(
                     "",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarovmail.ru",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "",
                         "Komarov",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "",
                         22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
                     "80000000000",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
             [
                 new CreateUserDto(
                     "paff",
                     "1234",
-                    new Profile(
+                    new CreateProfileDto(
                         "Ivan",
                         "Komarov",
                         22,
-                        new Avatar("", 'image/gif')
                     ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
+                    new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
-                    "80000000000",
-                )
-            ],
-            [
-                new CreateUserDto(
-                    "paff",
-                    "1234",
-                    new Profile(
-                        "Ivan",
-                        "Komarov",
-                        22,
-                        new Avatar("20210505175821!NyanCat.gif", '')
-                    ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
-                    "vano2001komarov@mail.ru",
-                    "80000000000",
-                )
-            ],
-            [
-                new CreateUserDto(
-                    "paff",
-                    "1234",
-                    new Profile(
-                        "Ivan",
-                        "Komarov",
-                        22,
-                        new Avatar("20210505175821!NyanCat.gif", 'image/bmp')
-                    ),
-                    new Address("Russia", "Kaluga", "Suvorova", "121a"),
-                    "vano2001komarov@mail.ru",
-                    "80000000000",
+                    "893712608",
+                    "../../Executor/resources/testfile",
+                    "image/jpeg",
                 )
             ],
         ];

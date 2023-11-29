@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Store\Connection\Entity;
 
 use App\Domain\User\Store\DTO\UserDTO;
-use App\Repository\UsersRepository;
+use App\Store\Connection\Repository\UsersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -31,9 +31,6 @@ class Users
     private ?int $age = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $pathToAvatar = null;
-
-    #[ORM\Column(type: Types::TEXT)]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -54,20 +51,21 @@ class Users
     #[ORM\Column(type: Types::TEXT)]
     private ?string $avatarMimeType = "null";
 
+
     public function __construct(
-        ?Uuid $id,
-        ?string $login,
-        ?string $password,
-        ?string $firstname,
-        ?string $lastname,
-        ?int $age,
-        ?string $pathToAvatar,
-        ?string $email,
-        ?string $phone,
-        ?string $country,
-        ?string $city,
-        ?string $street,
-        ?string $houseNumber
+        ?Uuid $id = null,
+        ?string $login = null,
+        ?string $password = null,
+        ?string $firstname = null,
+        ?string $lastname = null,
+        ?int $age = null,
+        ?string $email = null,
+        ?string $phone = null,
+        ?string $country = null,
+        ?string $city = null,
+        ?string $street = null,
+        ?string $houseNumber = null,
+        ?string $avatarMimeType = null,
     )
     {
         $this->id = $id;
@@ -76,34 +74,15 @@ class Users
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->age = $age;
-        $this->pathToAvatar = $pathToAvatar;
         $this->email = $email;
         $this->phone = $phone;
         $this->country = $country;
         $this->city = $city;
         $this->street = $street;
         $this->houseNumber = $houseNumber;
+        $this->avatarMimeType = $avatarMimeType;
     }
 
-
-    public static function createFromUserDTO(UserDTO $userDTO): self
-    {
-        return new Users(
-            $userDTO->id,
-            $userDTO->login,
-            $userDTO->password,
-            $userDTO->profile->getFirstName(),
-            $userDTO->profile->getLastName(),
-            $userDTO->profile->getAge(),
-            $userDTO->profile->getAvatar()->getPathToFile(),
-            $userDTO->email,
-            $userDTO->phone,
-            $userDTO->address->getCountry(),
-            $userDTO->address->getCity(),
-            $userDTO->address->getStreet(),
-            $userDTO->address->getHouseNumber(),
-        );
-    }
 
     public function getId(): ?Uuid
     {
@@ -173,18 +152,6 @@ class Users
     public function setAge(int $age): static
     {
         $this->age = $age;
-
-        return $this;
-    }
-
-    public function getPathToAvatar(): ?string
-    {
-        return $this->pathToAvatar;
-    }
-
-    public function setPathToAvatar(string $pathToAvatar): static
-    {
-        $this->pathToAvatar = $pathToAvatar;
 
         return $this;
     }

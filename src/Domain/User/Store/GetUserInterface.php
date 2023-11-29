@@ -2,9 +2,9 @@
 
 namespace App\Domain\User\Store;
 
-use App\Domain\User\Store\DTO\UserCollectionDTO;
+use App\Domain\User\Store\DTO\Collection\UserDtoCollection;
 
 interface GetUserInterface
 {
-    public function getAll(): UserCollectionDTO;
+    public function getAll(): UserDtoCollection;
 }

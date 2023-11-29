@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\User;
+namespace App\Executor\User;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

@@ -2,8 +2,11 @@
 
 namespace App\Domain\User;
 
-use App\Domain\User\Factory\CreateUserDto;
+use App\Domain\Address\Factory\CreateAddressDto;
+use App\Domain\User\Factory\DTO\CreateProfileDto;
+use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Factory\UserFactory;
+use App\Domain\User\Store\DTO\SaveUserDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\SaveUserInterface;
@@ -24,12 +27,17 @@ class UserRegistration
         $createUserDto = new CreateUserDto(
             $dto->login,
             $dto->password,
-            new Profile(
-                $dto->profile->getFirstName(),
-                $dto->profile->getLastName(),
-                $dto->profile->getAge(),
+            new CreateProfileDto(
+                $dto->profile->firstname,
+                $dto->profile->lastname,
+                $dto->profile->age,
             ),
-            $dto->address,
+            new CreateAddressDto(
+                $dto->address->country,
+                $dto->address->city,
+                $dto->address->street,
+                $dto->address->houseNumber,
+            ),
             $dto->email,
             $dto->phone,
             $dto->tempPathAvatar,
@@ -39,6 +47,8 @@ class UserRegistration
         $user = $this->userFactory->create($createUserDto);
         $userDto = UserDTO::createFromUser($user);
 
-        $this->userSaver->save($userDto);
+        $saveUserDto = new SaveUserDto($userDto, $createUserDto->pathTempFileAvatar, $createUserDto->avatarMimeType);
+
+        $this->userSaver->save($saveUserDto);
     }
 }

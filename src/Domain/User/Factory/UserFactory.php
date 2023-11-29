@@ -2,10 +2,11 @@
 
 namespace App\Domain\User\Factory;
 
+use App\Domain\Address\Factory\AddressFactory;
 use App\Domain\User\Avatar;
 use App\Domain\User\Exception\UserValidationException;
+use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\AvatarDto;
 use App\Domain\User\Store\DTO\FileSaveDto;
 use App\Domain\User\Store\SaveFileInterface;
 use App\Domain\User\User;
@@ -17,6 +18,7 @@ class UserFactory
     public function __construct(
         private ValidatorInterface $validator,
         private SaveFileInterface $fileSaver,
+        private AddressFactory $addressFactory,
     )
     {
 
@@ -32,19 +34,14 @@ class UserFactory
             throw new UserValidationException($result);
         }
 
-        $fileSaveDto = new FileSaveDto(
-            $createUserDto->pathTempFileAvatar,
-            $createUserDto->avatarMimeType,
-        );
-
-        $savedFileDto = $this->fileSaver->save($fileSaveDto);
-
         $profile = new Profile(
-            $createUserDto->profile->getFirstName(),
-            $createUserDto->profile->getLastName(),
-            $createUserDto->profile->getAge(),
-            new Avatar($savedFileDto->pathToAvatar),
+            $createUserDto->profile->firstname,
+            $createUserDto->profile->lastname,
+            $createUserDto->profile->age,
+            new Avatar(),
         );
+
+        $address = $this->addressFactory->create($createUserDto->address);
 
         $id = Uuid::v1();
 
@@ -53,7 +50,7 @@ class UserFactory
             $createUserDto->login,
             $createUserDto->password,
             $profile,
-            $createUserDto->address,
+            $address,
             $createUserDto->email,
             $createUserDto->phone,
         );

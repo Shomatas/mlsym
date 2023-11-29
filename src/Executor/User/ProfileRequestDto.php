@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\User;
+namespace App\Executor\User;
 
+use App\common\Validator as CustomAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class ProfileRequestDto
@@ -12,6 +13,7 @@ readonly class ProfileRequestDto
         #[Assert\NotBlank()]
         public mixed $lastname = null,
         #[Assert\NotBlank()]
+        #[CustomAssert\Integer]
         public mixed $age = null,
     )
     {

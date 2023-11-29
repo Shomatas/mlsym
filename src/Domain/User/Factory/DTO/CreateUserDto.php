@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Domain\User\Factory;
+namespace App\Domain\User\Factory\DTO;
 
 use App\Domain\Address\Address;
+use App\Domain\Address\Factory\CreateAddressDto;
 use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\UserDTO;
-use Symfony\Component\Uid\Uuid;
+use App\Domain\User\Store\DTO\ProfileRegisterDto;
+use App\common\Validator as CustomAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class CreateUserDto
@@ -16,14 +17,17 @@ readonly class CreateUserDto
         #[Assert\NotBlank]
         public string $password = "",
         #[Assert\NotBlank]
-        public ?Profile $profile = null,
+        public ?CreateProfileDto $profile = null,
         #[Assert\NotBlank]
-        public ?Address $address = null,
+        public ?CreateAddressDto $address = null,
         #[Assert\NotBlank]
         #[Assert\Email]
         public string $email = "",
+        #[CustomAssert\Phone]
         public ?string $phone = null,
+        #[Assert\NotBlank]
         public ?string $pathTempFileAvatar = "",
+        #[Assert\NotBlank]
         #[Assert\Regex("/^image\/(jpeg|png|gif)$/")]
         public ?string $avatarMimeType = "",
     )
@@ -36,13 +40,12 @@ readonly class CreateUserDto
         return new CreateUserDto(
             $data["login"],
             $data["password"],
-            new Profile(
+            new CreateProfileDto(
                 $data["profile"]["firstname"],
                 $data["profile"]["lastname"],
                 $data["profile"]["age"],
-                $data["profile"]["avatar"]
             ),
-            new Address(
+            new CreateAddressDto(
                 $data["address"]["country"],
                 $data["address"]["city"],
                 $data["address"]["street"],

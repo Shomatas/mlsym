@@ -11,8 +11,8 @@ readonly class UserRegisterDTO
     public function __construct(
         public string $login = "",
         public string $password = "",
-        public ?Profile $profile = null,
-        public ?Address $address = null,
+        public ?ProfileRegisterDto $profile = null,
+        public ?AddressRegisterDto $address = null,
         public string $email = "",
         public ?string $phone = null,
         public string $tempPathAvatar = "",

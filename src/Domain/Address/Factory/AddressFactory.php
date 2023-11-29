@@ -17,17 +17,17 @@ class AddressFactory
 
     public function create(CreateAddressDto $createAddressDto): Address
     {
-        $result = $this->validator->validate($createAddressDto->addressDto);
+        $result = $this->validator->validate($createAddressDto);
 
         if ($result->count() > 0) {
             throw new AddressFactoryException("Валидация не пройдена");
         }
 
         return new Address(
-            $createAddressDto->addressDto->country,
-            $createAddressDto->addressDto->city,
-            $createAddressDto->addressDto->street,
-            $createAddressDto->addressDto->houseNumber,
+            $createAddressDto->country,
+            $createAddressDto->city,
+            $createAddressDto->street,
+            $createAddressDto->houseNumber,
         );
     }
 }
