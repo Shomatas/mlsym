@@ -14,6 +14,7 @@ use App\Domain\User\UserRegistration;
 use App\Executor\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -41,27 +42,10 @@ class UsersController
 
     #[Route('/users/registration', methods: ['POST'])]
     public function register(
-        Request $request,
+        #[ValueResolver("user_register_request_dto")] UserRegisterRequestDto $dto,
+        Request $request
     ): Response
     {
-        $dto = new UserRegisterRequestDto(
-            $request->get("login"),
-            $request->get("password"),
-            new ProfileRequestDto(
-                $request->get("profile")["firstname"],
-                $request->get("profile")["lastname"],
-                $request->get("profile")["age"],
-            ),
-            new AddressRequestDto(
-                $request->get("address")["country"],
-                $request->get("address")["city"],
-                $request->get("address")["street"],
-                $request->get("address")["houseNumber"],
-            ),
-            $request->get("email"),
-            $request->get("phone"),
-        );
-
         $validationResult = $this->validator->validate($dto);
         $validationResult->addAll($this->validator->validate($dto->profile));
         $validationResult->addAll($this->validator->validate($dto->address));
