@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Executor\User;
+namespace App\Executor\Controller\User\DTO;
 
 use App\common\Validator as CustomAssert;
 use Symfony\Component\Validator\Constraints as Assert;

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Executor;
+namespace App\Executor\Controller\User;
 
-use App\Executor\User\UserRegisterRequestDto;
 use App\Domain\User\Store\DTO\AddressRegisterDto;
 use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\UserCollectionDtoMapperInterface;
 use App\Domain\User\UserRegistration;
-use App\Executor\Exception\ValidationException;
+use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
+use App\Executor\Controller\User\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;

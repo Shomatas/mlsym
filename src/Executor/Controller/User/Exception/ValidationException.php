@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Executor\Exception;
+namespace App\Executor\Controller\User\Exception;
 
 class ValidationException extends \RuntimeException
 {

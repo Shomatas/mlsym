@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Executor\Resolver;
+namespace App\Executor\Controller\User\Resolver;
 
-use App\Executor\User\AddressRequestDto;
-use App\Executor\User\ProfileRequestDto;
-use App\Executor\User\UserRegisterRequestDto;
+use App\Executor\Controller\User\DTO\AddressRequestDto;
+use App\Executor\Controller\User\DTO\ProfileRequestDto;
+use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
