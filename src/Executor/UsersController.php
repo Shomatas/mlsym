@@ -2,8 +2,6 @@
 
 namespace App\Executor;
 
-use App\Executor\User\AddressRequestDto;
-use App\Executor\User\ProfileRequestDto;
 use App\Executor\User\UserRegisterRequestDto;
 use App\Domain\User\Store\DTO\AddressRegisterDto;
 use App\Domain\User\Store\DTO\ProfileRegisterDto;

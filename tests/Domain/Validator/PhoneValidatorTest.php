@@ -4,12 +4,14 @@ namespace App\Tests\Domain\Validator;
 
 use App\common\Validator\Phone;
 use App\common\Validator\PhoneValidator;
+use App\Tests\Domain\Validator\DataProvider\PhoneValidatorTestDataProviderTrait;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class PhoneValidatorTest extends ConstraintValidatorTestCase
 {
 
+    use PhoneValidatorTestDataProviderTrait;
     /**
      * @inheritDoc
      */
@@ -29,15 +31,6 @@ class PhoneValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public static function validDP(): array
-    {
-        return [
-            ["89371260827"],
-            ["+79371260827"],
-            ["8 (937) 126 0827"],
-            ["+7-(937)-126-08-27"],
-        ];
-    }
 
     /**
      * @test
@@ -50,14 +43,5 @@ class PhoneValidatorTest extends ConstraintValidatorTestCase
         $this->buildViolation("The value you selected is phone.")->assertRaised();
     }
 
-    public static function invalidDP(): array
-    {
-        return [
-            ["-89371260827"],
-            ["79-371260827"],
-            ["8 )937( 126 0827"],
-            ["+7-(937)-126-082-7"],
-        ];
-    }
 
 }

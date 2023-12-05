@@ -3,7 +3,6 @@
 namespace App\Store\User;
 
 use App\Domain\User\Store\DTO\SaveUserDto;
-use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\SaveUserInterface;
 use App\Store\Connection\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;

@@ -2,11 +2,9 @@
 
 namespace App\Domain\User\Factory\DTO;
 
-use App\Domain\Address\Address;
 use App\Domain\Address\Factory\CreateAddressDto;
-use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\common\Validator as CustomAssert;
+use App\Domain\User\Store\DTO\UserRegisterDTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class CreateUserDto
@@ -35,29 +33,27 @@ readonly class CreateUserDto
 
     }
 
-    public static function createFromArray(array $data): self
+    public static function createFromUserRegisterDto(UserRegisterDTO $userRegisterDTO): self
     {
         return new CreateUserDto(
-            $data["login"],
-            $data["password"],
+            $userRegisterDTO->login,
+            $userRegisterDTO->password,
             new CreateProfileDto(
-                $data["profile"]["firstname"],
-                $data["profile"]["lastname"],
-                $data["profile"]["age"],
+                $userRegisterDTO->profile->firstname,
+                $userRegisterDTO->profile->lastname,
+                $userRegisterDTO->profile->age,
             ),
             new CreateAddressDto(
-                $data["address"]["country"],
-                $data["address"]["city"],
-                $data["address"]["street"],
-                $data["address"]["house_number"],
+                $userRegisterDTO->address->country,
+                $userRegisterDTO->address->city,
+                $userRegisterDTO->address->street,
+                $userRegisterDTO->address->houseNumber,
             ),
-            $data["email"],
-            $data["phone"],
+            $userRegisterDTO->email,
+            $userRegisterDTO->phone,
+            $userRegisterDTO->tempPathAvatar,
+            $userRegisterDTO->avatarMimeType,
         );
     }
 
-    public static function createFromJson(string $jsonData): self
-    {
-        return self::createFromArray(json_decode($jsonData, true));
-    }
 }

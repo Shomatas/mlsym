@@ -4,11 +4,13 @@ namespace App\Tests\Domain\Validator;
 
 use App\common\Validator\Numeric;
 use App\common\Validator\NumericValidator;
+use App\Tests\Domain\Validator\DataProvider\NumericValidatorTestDataProviderTrait;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class NumericValidatorTest extends ConstraintValidatorTestCase
 {
+    use NumericValidatorTestDataProviderTrait;
 
     /**
      * @inheritDoc
@@ -29,17 +31,6 @@ class NumericValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public static function validDP(): array
-    {
-        return [
-            ["123"],
-            [123],
-            [123.23],
-            ["123.32"],
-            ["12e3"]
-        ];
-    }
-
     /**
      * @test
      * @dataProvider invalidDP
@@ -51,14 +42,4 @@ class NumericValidatorTest extends ConstraintValidatorTestCase
         $this->buildViolation("The value you selected is not a valid choice.")->assertRaised();
     }
 
-    public static function invalidDP(): array
-    {
-        return [
-            ["123a"],
-            ["a123"],
-            ["abacaba"],
-            ["?.dsf23"],
-            ["a123a"],
-        ];
-    }
 }

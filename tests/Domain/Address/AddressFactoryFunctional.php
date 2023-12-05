@@ -5,11 +5,12 @@ namespace App\Tests\Domain\Address;
 use App\Domain\Address\Address;
 use App\Domain\Address\Factory\AddressFactory;
 use App\Domain\Address\Factory\CreateAddressDto;
-use App\Domain\Address\Store\DTO\AddressDto;
+use App\Tests\Domain\Address\DataProvider\AddressFactoryFunctionalDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class AddressFactoryFunctional extends KernelTestCase
 {
+    use AddressFactoryFunctionalDataProviderTrait;
     /**
      * @test
      * @dataProvider createDataProvider
@@ -26,12 +27,6 @@ class AddressFactoryFunctional extends KernelTestCase
         self::assertInstanceOf(Address::class, $address);
     }
 
-    public static function createDataProvider(): array
-    {
-        return [
-            [new CreateAddressDto("Russia", "Kaluga", "Suvorova", "121a")],
-        ];
-    }
 
     /**
      * @test
@@ -49,13 +44,5 @@ class AddressFactoryFunctional extends KernelTestCase
         $addressFactory->create($createAddressDto);
     }
 
-    public static function negativeCreateDataProvider(): array
-    {
-        return [
-            [new CreateAddressDto("", "Kaluga", "Suvorova", "121a")],
-            [new CreateAddressDto("Russia", "", "Suvorova", "121a")],
-            [new CreateAddressDto("Russia", "Kaluga", "", "121a")],
-            [new CreateAddressDto("Russia", "Kaluga", "Suvorova", "")],
-        ];
-    }
+
 }

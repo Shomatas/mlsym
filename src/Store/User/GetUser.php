@@ -6,13 +6,16 @@ use App\Domain\Address\Address;
 use App\Domain\Address\Store\DTO\AddressDto;
 use App\Domain\User\Avatar;
 use App\Domain\User\Profile;
+use App\Domain\User\Store\DTO\AvatarDto;
 use App\Domain\User\Store\DTO\Collection\UserDtoCollection;
+use App\Domain\User\Store\DTO\ProfileDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\GetUserTestInterface;
 use App\Store\Connection\Entity\Users;
 use App\Store\Connection\UserEntityCollectionMapper;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\Uid\Uuid;
 
 class GetUser implements GetUserTestInterface, GetUserInterface
@@ -31,11 +34,11 @@ class GetUser implements GetUserTestInterface, GetUserInterface
             $userData->getId(),
             $userData->getLogin(),
             $userData->getPassword(),
-            new Profile(
+            new ProfileDto(
                 $userData->getFirstname(),
                 $userData->getLastname(),
                 $userData->getAge(),
-                new Avatar($userData->getPathToAvatar(), $userData->getAvatarMimeType())
+                new AvatarDto(),
             ),
             new AddressDto($userData->getCountry(), $userData->getCity(), $userData->getStreet(), $userData->getHouseNumber()),
             $userData->getEmail(),
@@ -56,5 +59,13 @@ class GetUser implements GetUserTestInterface, GetUserInterface
         $data = $this->userEntityCollectionMapper->mapToArray($collection);
         $collection = $this->userCollectionDtoMapper->mapFromArray($data);
         return $collection[$collection->count() - 1];
+    }
+
+    public function getDataSize(): int
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult("len", "size");
+        $query = $this->entityManager->createNativeQuery('SELECT count(id) as len FROM users', $rsm);
+        return $query->getResult()[0]["size"];
     }
 }

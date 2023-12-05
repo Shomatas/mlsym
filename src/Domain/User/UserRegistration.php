@@ -24,25 +24,7 @@ class UserRegistration
     }
     public function register(UserRegisterDTO $dto): void
     {
-        $createUserDto = new CreateUserDto(
-            $dto->login,
-            $dto->password,
-            new CreateProfileDto(
-                $dto->profile->firstname,
-                $dto->profile->lastname,
-                $dto->profile->age,
-            ),
-            new CreateAddressDto(
-                $dto->address->country,
-                $dto->address->city,
-                $dto->address->street,
-                $dto->address->houseNumber,
-            ),
-            $dto->email,
-            $dto->phone,
-            $dto->tempPathAvatar,
-            $dto->avatarMimeType,
-        );
+        $createUserDto = CreateUserDto::createFromUserRegisterDto($dto);
 
         $user = $this->userFactory->create($createUserDto);
         $userDto = UserDTO::createFromUser($user);

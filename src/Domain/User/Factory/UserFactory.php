@@ -7,8 +7,6 @@ use App\Domain\User\Avatar;
 use App\Domain\User\Exception\UserValidationException;
 use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Profile;
-use App\Domain\User\Store\DTO\FileSaveDto;
-use App\Domain\User\Store\SaveFileInterface;
 use App\Domain\User\User;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,7 +15,6 @@ class UserFactory
 {
     public function __construct(
         private ValidatorInterface $validator,
-        private SaveFileInterface $fileSaver,
         private AddressFactory $addressFactory,
     )
     {

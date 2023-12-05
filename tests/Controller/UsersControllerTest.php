@@ -2,11 +2,13 @@
 
 namespace App\Tests\Controller;
 
+use App\Domain\User\Store\GetUserTestInterface;
+use App\Tests\Controller\DataProvider\UsersControllerTestDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Form;
 
 class UsersControllerTest extends WebTestCase
 {
+    use UsersControllerTestDataProviderTrait;
     /**
      * @test
      */
@@ -14,9 +16,14 @@ class UsersControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
+        $container = static::getContainer();
+        $userGetter = $container->get(GetUserTestInterface::class);
+        $initialDataSize = $userGetter->getDataSize();
+
         $response = $client->request('GET', '/users');
 
         $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals($initialDataSize, $userGetter->getDataSize());
     }
 
     /**
@@ -27,46 +34,14 @@ class UsersControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
+        self::bootKernel();
+        $container = static::getContainer();
+        $userGetter = $container->get(GetUserTestInterface::class);
+        $initialDataSize = $userGetter->getDataSize();
 
         $crawler = $client->request('POST', "/users/registration", $params, $files);
 
         $this->assertResponseStatusCodeSame(201);
-    }
-
-    public static function registerDP(): array
-    {
-        $size = filesize(__DIR__ . "/resources/testfile");
-
-        return [
-            [
-                [
-                    "login" => "paff",
-                    "password" => "1234",
-                    "profile" => [
-                        "firstname" => "Ilya",
-                        "lastname" => "Pomazenkov",
-                        "age" => "21",
-                    ],
-                    "address" => [
-                        "country" => "Russia",
-                        "city" => "Zhizdra",
-                        "street" => "Pushkina",
-                        "houseNumber" => "1211",
-                    ],
-                    "email" => "qpie@mail.ru",
-                    "phone" => "+7(937)-531-23-43",
-                ],
-                [
-                    "avatar" => [
-                        "name" => "test.jpg",
-                        "full_path" =>  __DIR__ . "/resources",
-                        "type" => "image/jpeg",
-                        "tmp_name" => __DIR__ . "/resources/testfile",
-                        "error" => 0,
-                        "size" => $size,
-                    ]
-                ]
-            ]
-        ];
+        $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());
     }
 }
