@@ -2,6 +2,7 @@
 
 namespace App\Executor\Controller\User;
 
+use App\Domain\User\Exception\UserValidationException;
 use App\Domain\User\Store\DTO\AddressRegisterDto;
 use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
@@ -19,17 +20,22 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UsersController
 {
     public function __construct(
-        private GetUserInterface $userGetter,
-        private UserRegistration $userRegistrar,
+        private GetUserInterface                 $userGetter,
+        private UserRegistration                 $userRegistrar,
         private UserCollectionDtoMapperInterface $userCollectionDtoMapper,
-        private ValidatorInterface $validator,
+        private ValidatorInterface               $validator,
     )
     {
     }
+
     #[Route('/users')]
     public function getAllUsers(): Response
     {
-        $userCollection = $this->userGetter->getAll();
+        try {
+            $userCollection = $this->userGetter->getAll();
+        } catch(\Throwable $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return new Response(
             $this->userCollectionDtoMapper->mapToJson($userCollection),
@@ -41,7 +47,7 @@ class UsersController
     #[Route('/users/registration', methods: ['POST'])]
     public function register(
         #[ValueResolver("user_register_request_dto")] UserRegisterRequestDto $dto,
-        Request $request
+        Request                                                              $request
     ): Response
     {
         $validationResult = $this->validator->validate($dto);
@@ -65,7 +71,18 @@ class UsersController
             $avatar->getClientMimeType(),
         );
 
-        $this->userRegistrar->register($userRegisterDto);
+        try {
+            $this->userRegistrar->register($userRegisterDto);
+        } catch (UserValidationException $exception) {
+            $response = [];
+            foreach ($exception->getViolationList() as $violation) {
+                $response[] = $violation->getMessage();
+            }
+            return new Response(json_encode($response, JSON_UNESCAPED_UNICODE), Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return new Response("Успешная регистрация", Response::HTTP_CREATED);
     }
 }

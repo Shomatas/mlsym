@@ -26,6 +26,8 @@ class PhoneValidator extends ConstraintValidator
             return;
         }
 
-        $this->context->buildViolation("The value you selected is phone.")->addViolation();
+        $this->context->buildViolation('{{ phone }} - некорректный номер телефона')
+            ->setParameter('{{ phone }}', $value)
+            ->addViolation();
     }
 }

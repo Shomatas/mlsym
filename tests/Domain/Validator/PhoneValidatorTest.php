@@ -40,7 +40,7 @@ class PhoneValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate($value, new Phone);
 
-        $this->buildViolation("The value you selected is phone.")->assertRaised();
+        $this->buildViolation('{{ phone }} - некорректный номер телефона')->setParameter("{{ phone }}", $value)->assertRaised();
     }
 
 

@@ -19,7 +19,7 @@ readonly class CreateUserDto
         #[Assert\NotBlank]
         public ?CreateAddressDto $address = null,
         #[Assert\NotBlank]
-        #[Assert\Email]
+        #[Assert\Email(message: '{{ value }} - невалидный email адресс')]
         public string $email = "",
         #[CustomAssert\Phone]
         public ?string $phone = null,
