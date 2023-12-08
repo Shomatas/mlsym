@@ -22,7 +22,7 @@ trait UsersControllerTestDataProviderTrait
                         "country" => "Russia",
                         "city" => "Zhizdra",
                         "street" => "Pushkina",
-                        "houseNumber" => "1211",
+                        "house_number" => "1211",
                     ],
                     "email" => "qpie@mail.ru",
                     "phone" => "+7(937)-531-23-43",
