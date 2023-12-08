@@ -24,22 +24,38 @@ class UserRegisterRequestDtoValueResolver implements ValueResolverInterface
             return [];
         }
 
+        $login = $request->get("login") ?? null;
+        $password = $request->get("password") ?? null;
+        $profile = [
+            "firstname" => $request->get("profile")["firstname"] ?? null,
+            "lastname" => $request->get("profile")["lastname"] ?? null,
+            "age" => $request->get("profile")["age"] ?? null,
+        ];
+        $address = [
+            "country" => $request->get("address")["country"] ?? null,
+            "city" => $request->get("address")["city"] ?? null,
+            "street" => $request->get("address")["street"] ?? null,
+            "house_number" => $request->get("address")["house_number"] ?? null,
+        ];
+        $email = $request->get("email") ?? null;
+        $phone = $request->get("phone") ?? null;
+
         return [new UserRegisterRequestDto(
-            $request->get("login"),
-            $request->get("password"),
+            $login,
+            $password,
             new ProfileRequestDto(
-                $request->get("profile")["firstname"],
-                $request->get("profile")["lastname"],
-                $request->get("profile")["age"],
+                $profile["firstname"],
+                $profile["lastname"],
+                $profile["age"],
             ),
             new AddressRequestDto(
-                $request->get("address")["country"],
-                $request->get("address")["city"],
-                $request->get("address")["street"],
-                $request->get("address")["houseNumber"],
+                $address["country"],
+                $address["city"],
+                $address["street"],
+                $address["house_number"],
             ),
-            $request->get("email"),
-            $request->get("phone"),
+            $email,
+            $phone,
         )];
     }
 }

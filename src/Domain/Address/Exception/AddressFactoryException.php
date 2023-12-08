@@ -2,7 +2,9 @@
 
 namespace App\Domain\Address\Exception;
 
-class AddressFactoryException extends \RuntimeException
+use App\Domain\Exception\DomainException;
+
+class AddressFactoryException extends DomainException
 {
 
 }
