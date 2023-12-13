@@ -2,6 +2,7 @@
 
 namespace App\Store\Connection\Entity;
 
+use App\Domain\User\Store\DTO\SaveUserDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Store\Connection\Repository\UsersRepository;
 use Doctrine\DBAL\Types\Types;
@@ -81,6 +82,25 @@ class Users
         $this->street = $street;
         $this->houseNumber = $houseNumber;
         $this->avatarMimeType = $avatarMimeType;
+    }
+
+    public static function createFromSaveUserDto(SaveUserDto $dto): Users
+    {
+        return new Users(
+            $dto->userDTO->id,
+            $dto->userDTO->login,
+            $dto->userDTO->password,
+            $dto->userDTO->profile->firstname,
+            $dto->userDTO->profile->lastname,
+            $dto->userDTO->profile->age,
+            $dto->userDTO->email,
+            $dto->userDTO->phone,
+            $dto->userDTO->address->country,
+            $dto->userDTO->address->city,
+            $dto->userDTO->address->street,
+            $dto->userDTO->address->houseNumber,
+            $dto->mimeType,
+        );
     }
 
 

@@ -11,10 +11,12 @@ use App\Domain\User\Store\UserCollectionDtoMapperInterface;
 use App\Domain\User\UserRegistration;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController
@@ -51,20 +53,14 @@ class UsersController
         Request                                                              $request
     ): Response
     {
-        $validationResult = $this->validator->validate($dto);
-        $validationResult->addAll($this->validator->validate($dto->profile));
-        $validationResult->addAll($this->validator->validate($dto->address));
-
+        $validationResult = $this->getConstraintViolationListInterfaceFromValidationUserRegisterRequestDto($dto);
         if ($validationResult->count() > 0) {
             return $this->responseFactory->create($validationResult, Response::HTTP_BAD_REQUEST);
         }
-
         $avatar = $request->files->get("avatar");
-
         if (is_null($avatar)) {
             return $this->responseFactory->create("Отсутствует файл аватара", Response::HTTP_BAD_REQUEST);
         }
-
         $userRegisterDto = new UserRegisterDTO(
             $dto->login,
             $dto->password,
@@ -75,7 +71,6 @@ class UsersController
             $avatar->getRealpath(),
             $avatar->getClientMimeType(),
         );
-
         try {
             $this->userRegistrar->register($userRegisterDto);
         } catch (DomainException $exception) {
@@ -83,7 +78,16 @@ class UsersController
         } catch (\Throwable $exception) {
             return $this->responseFactory->create($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
         return $this->responseFactory->create("Успешная регистрация", Response::HTTP_CREATED);
+    }
+
+    private function getConstraintViolationListInterfaceFromValidationUserRegisterRequestDto(
+        UserRegisterRequestDto $userRegisterRequestDto
+    ): ConstraintViolationListInterface
+    {
+        $validationResult = $this->validator->validate($userRegisterRequestDto);
+        $validationResult->addAll($this->validator->validate($userRegisterRequestDto->profile));
+        $validationResult->addAll($this->validator->validate($userRegisterRequestDto->address));
+        return $validationResult;
     }
 }

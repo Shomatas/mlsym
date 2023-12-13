@@ -2,6 +2,8 @@
 
 namespace App\Domain\Address;
 
+use App\Domain\Address\Factory\CreateAddressDto;
+
 class Address
 {
     public function __construct(
@@ -12,6 +14,16 @@ class Address
     )
     {
 
+    }
+
+    public static function createFromCreateUserDto(CreateAddressDto $createAddressDto): self
+    {
+        return new Address(
+            $createAddressDto->country,
+            $createAddressDto->city,
+            $createAddressDto->street,
+            $createAddressDto->houseNumber,
+        );
     }
     public function getCity(): string
     {
