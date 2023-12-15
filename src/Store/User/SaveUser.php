@@ -36,6 +36,6 @@ class SaveUser implements SaveUserInterface
     private function saveFileAvatarToResource(SaveUserDto $dto): void
     {
         $type = explode('/', $dto->mimeType)[1];
-        $this->filesystem->copy($dto->tempUrlAvatar, "/app/public/images/{$dto->userDTO->id}.{$type}");
+        $this->filesystem->rename("/app/public/temp/images/{$dto->userDTO->id}", "/app/public/images/{$dto->userDTO->id}.{$type}");
     }
 }

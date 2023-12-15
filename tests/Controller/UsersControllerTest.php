@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Domain\User\Store\DTO\RequestTemporaryUserFilenameDto;
 use App\Domain\User\Store\GetUserTestInterface;
 use App\Tests\Controller\DataProvider\UsersControllerTestDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -40,6 +41,15 @@ class UsersControllerTest extends WebTestCase
         $initialDataSize = $userGetter->getDataSize();
 
         $crawler = $client->request('POST', "/users/registration", $params, $files);
+
+        $requestTemporaryUserDto = RequestTemporaryUserFilenameDto::createFromArray($params);
+        $temporaryFilename = $userGetter->getTemporaryFilename($requestTemporaryUserDto);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals($initialDataSize, $userGetter->getDataSize());
+
+
+        $client->request('GET', "/users/registration/{$temporaryFilename}");
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());

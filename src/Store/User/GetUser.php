@@ -9,6 +9,7 @@ use App\Domain\User\Profile;
 use App\Domain\User\Store\DTO\AvatarDto;
 use App\Domain\User\Store\DTO\Collection\UserDtoCollection;
 use App\Domain\User\Store\DTO\ProfileDto;
+use App\Domain\User\Store\DTO\RequestTemporaryUserFilenameDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\GetUserTestInterface;
@@ -16,6 +17,7 @@ use App\Store\Connection\Entity\Users;
 use App\Store\Connection\UserEntityCollectionMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Uid\Uuid;
 
 class GetUser implements GetUserTestInterface, GetUserInterface
@@ -67,5 +69,17 @@ class GetUser implements GetUserTestInterface, GetUserInterface
         $rsm->addScalarResult("len", "size");
         $query = $this->entityManager->createNativeQuery('SELECT count(id) as len FROM users', $rsm);
         return $query->getResult()[0]["size"];
+    }
+
+    public function getTemporaryFilename(RequestTemporaryUserFilenameDto $requestTemporaryUserFilenameDto): string
+    {
+        $finder = (new Finder())->files();
+        foreach ($finder->in(__DIR__ . "/../../../public/temp")->exclude("images") as $file) {
+            $candidate = RequestTemporaryUserFilenameDto::createFromJson(file_get_contents($file->getPathname()));
+            if ($candidate->isEquals($requestTemporaryUserFilenameDto)) {
+                return $file->getFilename();
+            }
+        }
+        return "";
     }
 }

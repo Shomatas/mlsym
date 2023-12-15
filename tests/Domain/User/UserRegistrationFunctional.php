@@ -3,6 +3,7 @@
 namespace App\Tests\Domain\User;
 
 use App\Domain\User\Factory\UserFactory;
+use App\Domain\User\Store\DTO\RequestTemporaryUserFilenameDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\GetUserTestInterface;
@@ -28,11 +29,14 @@ class UserRegistrationFunctional extends KernelTestCase
         $userGetter = $container->get(GetUserTestInterface::class);
         $initialDataSize = $userGetter->getDataSize();
 
-        $userSaver = $container->get(SaveUserInterface::class);
-        $userFactory = $container->get(UserFactory::class);
-        $userRegistrar = new UserRegistration($userSaver, $userFactory);
+        $userRegistrar = $container->get(UserRegistration::class);
 
-        $userRegistrar->register($userRegisterDTO);
+        $userRegistrar->prepareRegistration($userRegisterDTO);
+
+        $requestTemporaryUserDto = RequestTemporaryUserFilenameDto::createFromUserRegisterDto($userRegisterDTO);
+        $temporaryFilename = $userGetter->getTemporaryFilename($requestTemporaryUserDto);
+
+        $userRegistrar->register($temporaryFilename);
 
         $userDto = $userGetter->getLast();
 

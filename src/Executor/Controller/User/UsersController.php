@@ -11,7 +11,6 @@ use App\Domain\User\Store\UserCollectionDtoMapperInterface;
 use App\Domain\User\UserRegistration;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
@@ -48,7 +47,7 @@ class UsersController
     }
 
     #[Route('/users/registration', methods: ['POST'])]
-    public function register(
+    public function prepareRegistration(
         #[ValueResolver("user_register_request_dto")] UserRegisterRequestDto $dto,
         Request                                                              $request
     ): Response
@@ -72,13 +71,13 @@ class UsersController
             $avatar->getClientMimeType(),
         );
         try {
-            $this->userRegistrar->register($userRegisterDto);
+            $this->userRegistrar->prepareRegistration($userRegisterDto);
         } catch (DomainException $exception) {
             return $this->responseFactory->createResponseFromDomainException($exception);
         } catch (\Throwable $exception) {
             return $this->responseFactory->create($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $this->responseFactory->create("Успешная регистрация", Response::HTTP_CREATED);
+        return $this->responseFactory->create("На вашу почту отправлено письмо для верификации", Response::HTTP_OK);
     }
 
     private function getConstraintViolationListInterfaceFromValidationUserRegisterRequestDto(
@@ -89,5 +88,20 @@ class UsersController
         $validationResult->addAll($this->validator->validate($userRegisterRequestDto->profile));
         $validationResult->addAll($this->validator->validate($userRegisterRequestDto->address));
         return $validationResult;
+    }
+
+    #[Route('/users/registration/{id}')]
+    public function registration(
+        string $id
+    ): Response
+    {
+        try {
+            $this->userRegistrar->register($id);
+        } catch (DomainException $exception) {
+            return $this->responseFactory->createResponseFromDomainException($exception);
+        } catch (\Throwable $exception) {
+            return $this->responseFactory->create($exception->getMessage(), $exception->getCode());
+        }
+        return $this->responseFactory->create("Успешная регистрация", Response::HTTP_CREATED);
     }
 }
