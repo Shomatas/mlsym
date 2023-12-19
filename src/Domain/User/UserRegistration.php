@@ -80,6 +80,7 @@ class UserRegistration
             $saveUserDto = $this->temporarySaveUserDto->pop($userId);
         } catch (\Throwable $exception) {
             $this->storeLogger->error($exception->getMessage());
+            throw new SystemException();
         }
         return $saveUserDto;
     }
@@ -89,7 +90,7 @@ class UserRegistration
         try {
             $user = $this->userFactory->create($dto);
         } catch (DomainException $exception) {
-            throw new CreateUserException("Во время создания сущности пользователя произошла ошибка");
+            throw new CreateUserException;
         } catch (\Throwable $exception) {
             $this->userFactoryLogger->error($exception->getMessage());
             throw new SystemException("Системная ошибка");

@@ -13,7 +13,6 @@ class AddressFactory
         private ValidatorInterface $validator,
     )
     {
-
     }
 
     public function create(CreateAddressDto $createAddressDto): Address
@@ -25,7 +24,6 @@ class AddressFactory
     private function validateCreateAddressDtoAndThrowFoundErrors(CreateAddressDto $createAddressDto): void
     {
         $result = $this->validator->validate($createAddressDto);
-
         if ($result->count() > 0) {
             throw new AddressFactoryException("Валидация не пройдена");
         }

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\User;
 
+use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Factory\UserFactory;
 use App\Domain\User\Store\DTO\RequestTemporaryUserFilenameDto;
 use App\Domain\User\Store\DTO\UserDTO;
@@ -42,5 +43,13 @@ class UserRegistrationFunctional extends KernelTestCase
 
         self::assertInstanceOf(UserDTO::class, $userDto);
         self::assertEquals($initialDataSize + 1, $userGetter->getDataSize());
+    }
+
+    /**
+     * @test
+     */
+    public static function getUserFromUserFactory(CreateUserDto $createUserDto): void
+    {
+
     }
 }

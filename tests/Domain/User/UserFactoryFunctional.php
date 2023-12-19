@@ -14,25 +14,23 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UserFactoryFunctional extends KernelTestCase
 {
     use UserFactoryFunctionalDataProviderTrait;
+
+    public function setUp(): void
+    {
+//        self::bootKernel();
+    }
+
     /**
      * @test
      * @dataProvider createDataProvider
      */
     public function create(CreateUserDto $createUserDto): void
     {
-        self::bootKernel();
         $container = static::getContainer();
-
-        $userFactory = new UserFactory(
-            $container->get(ValidatorInterface::class),
-            $container->get(AddressFactory::class),
-        );
+        $userFactory = $container->get(UserFactory::class);
         $user = $userFactory->create($createUserDto);
-
         self::assertInstanceOf(User::class, $user);
     }
-
-
 
     /**
      * @test
@@ -40,14 +38,9 @@ class UserFactoryFunctional extends KernelTestCase
      */
     public function negativeCreate(CreateUserDto $createUserDto): void
     {
-        self::expectException(UserValidationException::class);
-        self::bootKernel();
         $container = static::getContainer();
-
-        $userFactory = new UserFactory(
-            $container->get(ValidatorInterface::class),
-            $container->get(AddressFactory::class),
-        );
+        self::expectException(UserValidationException::class);
+        $userFactory = $container->get(UserFactory::class);
         $userFactory->create($createUserDto);
     }
 }

@@ -27,7 +27,6 @@ class NumericValidatorTest extends ConstraintValidatorTestCase
     public function validData($value): void
     {
         $this->validator->validate($value, new Numeric());
-
         $this->assertNoViolation();
     }
 
@@ -38,7 +37,6 @@ class NumericValidatorTest extends ConstraintValidatorTestCase
     public function invalidData(mixed $value): void
     {
         $this->validator->validate($value, new Numeric());
-
         $this->buildViolation("The value you selected is not a valid choice.")->assertRaised();
     }
 

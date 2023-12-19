@@ -11,22 +11,18 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class AddressFactoryFunctional extends KernelTestCase
 {
     use AddressFactoryFunctionalDataProviderTrait;
+
     /**
      * @test
      * @dataProvider createDataProvider
      */
     public function create(CreateAddressDto $createAddressDto): void
     {
-        self::bootKernel();
-
         $container = static::getContainer();
         $addressFactory = $container->get(AddressFactory::class);
-
         $address = $addressFactory->create($createAddressDto);
-
         self::assertInstanceOf(Address::class, $address);
     }
-
 
     /**
      * @test
@@ -35,14 +31,8 @@ class AddressFactoryFunctional extends KernelTestCase
     public function negativeCreate(CreateAddressDto $createAddressDto): void
     {
         self::expectException(\Exception::class);
-
-        self::bootKernel();
-
         $container = static::getContainer();
         $addressFactory = $container->get(AddressFactory::class);
-
         $addressFactory->create($createAddressDto);
     }
-
-
 }
