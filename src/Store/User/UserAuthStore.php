@@ -22,6 +22,8 @@ class UserAuthStore implements UserAuthStoreInterface
             "login" => $userAuthorizationDto->login,
         ]);
 
-        return $userData->getPassword() === $userAuthorizationDto->password;
+
+
+        return !is_null($userData) && ($userData->getPassword() === $userAuthorizationDto->password);
     }
 }

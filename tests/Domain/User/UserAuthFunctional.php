@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\User;
 
+use App\Domain\User\Exception\UserAuthException;
 use App\Domain\User\Store\DTO\UserAuthorizationDto;
 use App\Domain\User\Store\DTO\UserDTO;
 use App\Domain\User\UserAuthInspector;
@@ -40,5 +41,32 @@ class UserAuthFunctional extends KernelTestCase
         ];
     }
 
-    // TODO: Написать другие тесты
+    /**
+     * @test
+     * @dataProvider failedAuthDataProvider
+     */
+    public function failedAuth(UserAuthorizationDto $userAuthorizationDto): void
+    {
+        $this->expectException(UserAuthException::class);
+        $userAuthInspector = $this->container->get(UserAuthInspector::class);
+        $userAuthInspector->auth($userAuthorizationDto);
+    }
+
+    public static function failedAuthDataProvider(): array
+    {
+        return [
+            'When password is invalid' => [
+                new UserAuthorizationDto(
+                    'paff',
+                    '4321',
+                ),
+            ],
+            'When login doens\'t exists' => [
+                new UserAuthorizationDto(
+                    'notexistinglogin',
+                    '4321',
+                ),
+            ]
+        ];
+    }
 }
