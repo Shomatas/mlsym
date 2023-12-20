@@ -46,6 +46,28 @@ class GetUser implements GetUserTestInterface, GetUserInterface
         );
     }
 
+    public function getByLogin(string $login): UserDTO
+    {
+        $userData = $this->entityManager->getRepository(Users::class)->findOneBy([
+            "login" => $login,
+        ]);
+
+        return new UserDTO(
+            $userData->getId(),
+            $userData->getLogin(),
+            $userData->getPassword(),
+            new ProfileDto(
+                $userData->getFirstname(),
+                $userData->getLastname(),
+                $userData->getAge(),
+                new AvatarDto(),
+            ),
+            new AddressDto($userData->getCountry(), $userData->getCity(), $userData->getStreet(), $userData->getHouseNumber()),
+            $userData->getEmail(),
+            $userData->getPhone(),
+        );
+    }
+
     public function getAll(): UserDtoCollection
     {
         $collection = $this->entityManager->getRepository(Users::class)->findAll();
