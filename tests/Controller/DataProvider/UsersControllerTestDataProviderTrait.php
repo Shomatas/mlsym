@@ -40,4 +40,14 @@ trait UsersControllerTestDataProviderTrait
             ]
         ];
     }
+
+    public static function authDataProvider(): array
+    {
+        return [
+            "When data is valid" => [
+                ["login" => "paff",
+                "password" => "1234",]
+            ]
+        ];
+    }
 }

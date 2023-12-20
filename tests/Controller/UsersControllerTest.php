@@ -44,4 +44,20 @@ class UsersControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());
     }
+
+    /**
+     * @test
+     * @dataProvider authDataProvider
+     */
+    public function auth(array $params): void
+    {
+        $client = static::createClient();
+        self::bootKernel();
+        $container = static::getContainer();
+        $userGetter = $container->get(GetUserTestInterface::class);
+        $initialDataSize = $userGetter->getDataSize();
+        $crawler = $client->request('POST', '/users/auth', $params);
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals($initialDataSize, $userGetter->getDataSize());
+    }
 }

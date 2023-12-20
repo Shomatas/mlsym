@@ -8,7 +8,7 @@ use App\Domain\Address\Factory\CreateAddressDto;
 use App\Tests\Domain\Address\DataProvider\AddressFactoryFunctionalDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class AddressFactoryFunctional extends KernelTestCase
+class AddressFactoryFunctionalTest extends KernelTestCase
 {
     use AddressFactoryFunctionalDataProviderTrait;
     /**

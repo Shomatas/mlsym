@@ -9,7 +9,7 @@ use App\Domain\User\UserAuthInspector;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Container;
 
-class UserAuthFunctional extends KernelTestCase
+class UserAuthFunctionalTest extends KernelTestCase
 {
     public Container $container;
     public function setUp(): void

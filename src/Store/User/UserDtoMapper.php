@@ -33,4 +33,9 @@ class UserDtoMapper implements UserDtoMapperInterface
             ]
         ];
     }
+
+    public function mapToJson(UserDTO $userDTO): string
+    {
+        return json_encode($this->mapToArray($userDTO), JSON_UNESCAPED_UNICODE);
+    }
 }

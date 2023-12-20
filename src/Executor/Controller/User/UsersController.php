@@ -5,12 +5,17 @@ namespace App\Executor\Controller\User;
 use App\Domain\Exception\DomainException;
 use App\Domain\User\Store\DTO\AddressRegisterDto;
 use App\Domain\User\Store\DTO\ProfileRegisterDto;
+use App\Domain\User\Store\DTO\UserAuthorizationDto;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\UserCollectionDtoMapperInterface;
+use App\Domain\User\Store\UserDtoMapperInterface;
+use App\Domain\User\UserAuthInspector;
 use App\Domain\User\UserRegistration;
+use App\Executor\Controller\User\DTO\UserAuthRequestDto;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
+use App\Store\User\UserDtoMapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +30,10 @@ class UsersController
         private GetUserInterface                 $userGetter,
         private UserRegistration                 $userRegistrar,
         private UserCollectionDtoMapperInterface $userCollectionDtoMapper,
+        private UserDtoMapperInterface           $userDtoMapper,
         private ValidatorInterface               $validator,
         private ResponseFactory                  $responseFactory,
+        private UserAuthInspector                $userAuthInspector,
     )
     {
     }
@@ -44,6 +51,32 @@ class UsersController
             $this->userCollectionDtoMapper->mapToJson($userCollection),
             Response::HTTP_OK,
             ["content-type" => "application/json"],
+        );
+    }
+
+    #[Route("/users/auth", methods: ["POST"])]
+    public function auth(
+        #[ValueResolver("user_auth_request_dto")] UserAuthRequestDto $userAuthRequestDto,
+    ): Response
+    {
+        $resultValidation = $this->validator->validate($userAuthRequestDto);
+        if ($resultValidation->count() > 0) {
+            return $this->responseFactory->create($resultValidation, Response::HTTP_BAD_REQUEST);
+        }
+        $userAuthDto = new UserAuthorizationDto(
+            $userAuthRequestDto->login,
+            $userAuthRequestDto->password,
+        );
+        try {
+            $userDto = $this->userAuthInspector->auth($userAuthDto);
+        } catch (DomainException $exception) {
+            return $this->responseFactory->createResponseFromDomainException($exception);
+        } catch (\Throwable $exception) {
+            return $this->responseFactory->create($exception->getMessage(), $exception->getCode());
+        }
+        return $this->responseFactory->create(
+            $this->userDtoMapper->mapToJson($userDto),
+            Response::HTTP_OK,
         );
     }
 
