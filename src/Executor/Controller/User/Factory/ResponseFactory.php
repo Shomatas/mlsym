@@ -41,7 +41,7 @@ class ResponseFactory
         }
 
         if ($exception instanceof UserAuthException) {
-            return new Response("Логин или пароль неверны");
+            return new Response("Логин или пароль неверны", Response::HTTP_UNAUTHORIZED);
         }
 
         return new Response("Неизвестная ошибка", Response::HTTP_INTERNAL_SERVER_ERROR);
