@@ -39,9 +39,27 @@ class UsersControllerTest extends WebTestCase
         $userGetter = $container->get(GetUserTestInterface::class);
         $initialDataSize = $userGetter->getDataSize();
 
-        $crawler = $client->request('POST', "/users/registration", $params, $files);
+        $crawler = $client->request('POST', '/users/registration', $params, $files);
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());
+    }
+
+    /**
+     * @test
+     */
+    public function getUserById(): void
+    {
+        $client = static::createClient();
+        self::bootKernel();
+        $container = static::getContainer();
+        $userGetter = $container->get(GetUserTestInterface::class);
+        $userDto = $userGetter->getLast();
+        $initialDataSize = $userGetter->getDataSize();
+
+        $crawler = $client->request('GET', "/users/{$userDto->id}");
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals($initialDataSize, $userGetter->getDataSize());
     }
 }

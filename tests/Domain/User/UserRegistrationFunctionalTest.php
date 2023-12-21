@@ -12,7 +12,7 @@ use App\Tests\Domain\User\DataProvider\UserRegistrationFunctionalDataProviderTra
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 
-class UserRegistrationFunctional extends KernelTestCase
+class UserRegistrationFunctionalTest extends KernelTestCase
 {
     use UserRegistrationFunctionalDataProviderTrait;
 
@@ -28,9 +28,7 @@ class UserRegistrationFunctional extends KernelTestCase
         $userGetter = $container->get(GetUserTestInterface::class);
         $initialDataSize = $userGetter->getDataSize();
 
-        $userSaver = $container->get(SaveUserInterface::class);
-        $userFactory = $container->get(UserFactory::class);
-        $userRegistrar = new UserRegistration($userSaver, $userFactory);
+        $userRegistrar = $container->get(UserRegistration::class);
 
         $userRegistrar->register($userRegisterDTO);
 

@@ -8,14 +8,15 @@ use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
 use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\UserCollectionDtoMapperInterface;
+use App\Domain\User\Store\UserDtoMapperInterface;
 use App\Domain\User\UserRegistration;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -25,13 +26,15 @@ class UsersController
         private GetUserInterface                 $userGetter,
         private UserRegistration                 $userRegistrar,
         private UserCollectionDtoMapperInterface $userCollectionDtoMapper,
+        private UserDtoMapperInterface           $userDtoMapper,
         private ValidatorInterface               $validator,
         private ResponseFactory                  $responseFactory,
     )
     {
     }
 
-    #[Route('/users')]
+    #[
+        Route('/users')]
     public function getAllUsers(): Response
     {
         try {
@@ -46,6 +49,7 @@ class UsersController
             ["content-type" => "application/json"],
         );
     }
+
 
     #[Route('/users/registration', methods: ['POST'])]
     public function register(
@@ -89,5 +93,24 @@ class UsersController
         $validationResult->addAll($this->validator->validate($userRegisterRequestDto->profile));
         $validationResult->addAll($this->validator->validate($userRegisterRequestDto->address));
         return $validationResult;
+    }
+
+
+    #[Route('/users/{id}')]
+    public function getUserById(
+        Uuid $id,
+    ): Response
+    {
+        try {
+            $userDto = $this->userGetter->get($id);
+        } catch (\Throwable $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new Response(
+            $this->userDtoMapper->mapToJson($userDto),
+            Response::HTTP_OK,
+            ["content-type" => "application/json"]
+        );
     }
 }

@@ -23,7 +23,7 @@ trait UserRegistrationFunctionalDataProviderTrait
                     new AddressRegisterDto("Russia", "Kaluga", "Suvorova", "121a"),
                     "vano2001komarov@mail.ru",
                     "89371260827",
-                    __DIR__ . "/../../Controller/resources/testfile",
+                    __DIR__ . "/../../../Controller/resources/testfile",
                     "image/png",
                 )
             ]

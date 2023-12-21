@@ -11,7 +11,7 @@ use App\Tests\Domain\User\DataProvider\UserFactoryFunctionalDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class UserFactoryFunctional extends KernelTestCase
+class UserFactoryFunctionalTest extends KernelTestCase
 {
     use UserFactoryFunctionalDataProviderTrait;
     /**
