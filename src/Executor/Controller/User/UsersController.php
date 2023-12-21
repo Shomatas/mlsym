@@ -17,7 +17,6 @@ use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
 use App\Store\User\UserDtoMapper;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
@@ -25,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class UsersController extends AbstractController
+class UsersController
 {
     public function __construct(
         private GetUserInterface                 $userGetter,
@@ -55,15 +54,9 @@ class UsersController extends AbstractController
         );
     }
 
-    #[Route("/users/auth", methods: ['GET'])]
-    public function authForm()
-    {
-        return $this->render("user/auth.html.twig");
-    }
-
-    #[Route("/users/auth", methods: ['POST'])]
+    #[Route("/users/auth", methods: ["POST"])]
     public function auth(
-        #[ValueResolver('user_auth_request_dto')] UserAuthRequestDto $userAuthRequestDto,
+        #[ValueResolver("user_auth_request_dto")] UserAuthRequestDto $userAuthRequestDto,
     ): Response
     {
         $resultValidation = $this->validator->validate($userAuthRequestDto);
