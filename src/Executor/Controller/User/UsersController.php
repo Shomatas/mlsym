@@ -3,6 +3,7 @@
 namespace App\Executor\Controller\User;
 
 use App\Domain\Exception\DomainException;
+use App\Domain\User\Store\DeletingUserInterface;
 use App\Domain\User\Store\DTO\AddressRegisterDto;
 use App\Domain\User\Store\DTO\ProfileRegisterDto;
 use App\Domain\User\Store\DTO\UserRegisterDTO;
@@ -12,6 +13,8 @@ use App\Domain\User\Store\UserDtoMapperInterface;
 use App\Domain\User\UserRegistration;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
+use Doctrine\ORM\Persisters\Entity\JoinedSubclassPersister;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
@@ -29,12 +32,12 @@ class UsersController
         private UserDtoMapperInterface           $userDtoMapper,
         private ValidatorInterface               $validator,
         private ResponseFactory                  $responseFactory,
+        private DeletingUserInterface            $deletingUser,
     )
     {
     }
 
-    #[
-        Route('/users')]
+    #[Route('/users')]
     public function getAllUsers(): Response
     {
         try {
@@ -96,7 +99,7 @@ class UsersController
     }
 
 
-    #[Route('/users/{id}')]
+    #[Route('/users/{id}', methods: 'GET')]
     public function getUserById(
         Uuid $id,
     ): Response
@@ -112,5 +115,18 @@ class UsersController
             Response::HTTP_OK,
             ["content-type" => "application/json"]
         );
+    }
+
+    #[Route('/users/{id}', methods: ['DELETE'])]
+    public function deleteUserById(
+        Uuid $id,
+    ): Response
+    {
+        try {
+            $this->deletingUser->delete($id);
+        } catch (\Throwable $exception) {
+            return new JsonResponse("Внутренняя ошибка сервера", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse("Успешное удаление", Response::HTTP_OK);
     }
 }
