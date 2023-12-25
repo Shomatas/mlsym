@@ -7,10 +7,12 @@ use App\Domain\User\Store\DTO\UserDTO;
 use App\Store\Connection\Repository\UsersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
@@ -51,6 +53,7 @@ class Users
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $avatarMimeType = "null";
+
 
 
     public function __construct(
@@ -135,6 +138,7 @@ class Users
 
     public function setPassword(string $password): static
     {
+
         $this->password = $password;
 
         return $this;
@@ -258,5 +262,18 @@ class Users
         $this->avatarMimeType = $avatarMimeType;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+    public function eraseCredentials()
+    {
+
+    }
+    public function getUserIdentifier(): string
+    {
+        return $this->login;
     }
 }

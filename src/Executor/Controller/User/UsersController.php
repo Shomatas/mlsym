@@ -16,11 +16,13 @@ use App\Executor\Controller\User\DTO\UserAuthRequestDto;
 use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Executor\Controller\User\Factory\ResponseFactory;
 use App\Store\User\UserDtoMapper;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -51,32 +53,6 @@ class UsersController
             $this->userCollectionDtoMapper->mapToJson($userCollection),
             Response::HTTP_OK,
             ["content-type" => "application/json"],
-        );
-    }
-
-    #[Route("/users/auth", methods: ["POST"])]
-    public function auth(
-        #[ValueResolver("user_auth_request_dto")] UserAuthRequestDto $userAuthRequestDto,
-    ): Response
-    {
-        $resultValidation = $this->validator->validate($userAuthRequestDto);
-        if ($resultValidation->count() > 0) {
-            return $this->responseFactory->create($resultValidation, Response::HTTP_BAD_REQUEST);
-        }
-        $userAuthDto = new UserAuthorizationDto(
-            $userAuthRequestDto->login,
-            $userAuthRequestDto->password,
-        );
-        try {
-            $userDto = $this->userAuthInspector->auth($userAuthDto);
-        } catch (DomainException $exception) {
-            return $this->responseFactory->createResponseFromDomainException($exception);
-        } catch (\Throwable $exception) {
-            return $this->responseFactory->create($exception->getMessage(), $exception->getCode());
-        }
-        return $this->responseFactory->create(
-            $this->userDtoMapper->mapToJson($userDto),
-            Response::HTTP_OK,
         );
     }
 
