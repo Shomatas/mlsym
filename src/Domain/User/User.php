@@ -4,9 +4,10 @@ namespace App\Domain\User;
 
 
 use App\Domain\Address\Address;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Uid\Uuid;
 
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     public function __construct(
         private ?Uuid $id,
@@ -73,6 +74,11 @@ class User
     public function getLogin(): string
     {
         return $this->login;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
     }
 
     public function getPassword(): string

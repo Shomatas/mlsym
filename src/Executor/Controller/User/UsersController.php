@@ -32,10 +32,8 @@ class UsersController
         private GetUserInterface                 $userGetter,
         private UserRegistration                 $userRegistrar,
         private UserCollectionDtoMapperInterface $userCollectionDtoMapper,
-        private UserDtoMapperInterface           $userDtoMapper,
         private ValidatorInterface               $validator,
         private ResponseFactory                  $responseFactory,
-        private UserAuthInspector                $userAuthInspector,
     )
     {
     }

@@ -8,6 +8,9 @@ use App\Domain\User\Exception\UserValidationException;
 use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Profile;
 use App\Domain\User\User;
+use Symfony\Component\PasswordHasher\Hasher\PlaintextPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -18,6 +21,7 @@ class UserFactory
     public function __construct(
         private ValidatorInterface $validator,
         private AddressFactory $addressFactory,
+        private UserPasswordHasherInterface $userPasswordHasher,
     )
     {
 
@@ -29,7 +33,7 @@ class UserFactory
         $profile = $this->createProfile($createUserDto);
         $address = $this->addressFactory->create($createUserDto->address);
         $id = Uuid::v1();
-        return new User(
+        $user = new User(
             $id,
             $createUserDto->login,
             $createUserDto->password,
@@ -38,6 +42,11 @@ class UserFactory
             $createUserDto->email,
             $createUserDto->phone,
         );
+
+        $hash = $this->userPasswordHasher->hashPassword($user, $createUserDto->password);
+        $user->setPassword($hash);
+
+        return $user;
     }
 
     private function validateCreateUserDtoAndThrowFoundErrors(CreateUserDto $createUserDto): void

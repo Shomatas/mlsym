@@ -23,10 +23,7 @@ class UserFactoryFunctionalTest extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
 
-        $userFactory = new UserFactory(
-            $container->get(ValidatorInterface::class),
-            $container->get(AddressFactory::class),
-        );
+        $userFactory = $container->get(UserFactory::class);
         $user = $userFactory->create($createUserDto);
 
         self::assertInstanceOf(User::class, $user);
@@ -44,10 +41,7 @@ class UserFactoryFunctionalTest extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
 
-        $userFactory = new UserFactory(
-            $container->get(ValidatorInterface::class),
-            $container->get(AddressFactory::class),
-        );
+        $userFactory = $container->get(UserFactory::class);
         $userFactory->create($createUserDto);
     }
 }
