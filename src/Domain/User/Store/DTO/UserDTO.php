@@ -19,6 +19,7 @@ readonly class UserDTO
         public ?AddressDto $address = null,
         public string $email = "",
         public ?string $phone = null,
+        public bool $isConfirmed = false,
     )
     {
 
@@ -44,6 +45,7 @@ readonly class UserDTO
             ),
             $user->getEmail(),
             $user->getPhone(),
+            $user->isConfirmed(),
         );
     }
 }

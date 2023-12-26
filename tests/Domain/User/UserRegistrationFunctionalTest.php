@@ -14,7 +14,7 @@ use App\Tests\Domain\User\DataProvider\UserRegistrationFunctionalDataProviderTra
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 
-class UserRegistrationFunctional extends KernelTestCase
+class UserRegistrationFunctionalTest extends KernelTestCase
 {
     use UserRegistrationFunctionalDataProviderTrait;
 
@@ -34,10 +34,7 @@ class UserRegistrationFunctional extends KernelTestCase
 
         $userRegistrar->prepareRegistration($userRegisterDTO);
 
-        $requestTemporaryUserDto = RequestTemporaryUserFilenameDto::createFromUserRegisterDto($userRegisterDTO);
-        $temporaryFilename = $userGetter->getTemporaryFilename($requestTemporaryUserDto);
-
-        $userRegistrar->register($temporaryFilename);
+        $userRegistrar->register($userGetter->getLast()->id);
 
         $userDto = $userGetter->getLast();
 
@@ -45,11 +42,4 @@ class UserRegistrationFunctional extends KernelTestCase
         self::assertEquals($initialDataSize + 1, $userGetter->getDataSize());
     }
 
-    /**
-     * @test
-     */
-    public static function getUserFromUserFactory(CreateUserDto $createUserDto): void
-    {
-
-    }
 }

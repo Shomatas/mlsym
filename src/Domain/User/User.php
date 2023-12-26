@@ -16,8 +16,19 @@ class User
         private ?Address $address = null,
         private string $email = "",
         private ?string $phone = null,
+        private bool $isConfirmed = false,
     )
     {
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): void
+    {
+        $this->isConfirmed = $isConfirmed;
     }
 
     public function getProfile(): Profile

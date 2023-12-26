@@ -52,6 +52,9 @@ class Users
     #[ORM\Column(type: Types::TEXT)]
     private ?string $avatarMimeType = "null";
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $isConfirmed = null;
+
 
     public function __construct(
         ?Uuid $id = null,
@@ -67,6 +70,7 @@ class Users
         ?string $street = null,
         ?string $houseNumber = null,
         ?string $avatarMimeType = null,
+        ?bool $isConfirmed = null,
     )
     {
         $this->id = $id;
@@ -82,6 +86,7 @@ class Users
         $this->street = $street;
         $this->houseNumber = $houseNumber;
         $this->avatarMimeType = $avatarMimeType;
+        $this->isConfirmed = $isConfirmed;
     }
 
     public static function createFromSaveUserDto(SaveUserDto $dto): Users
@@ -100,9 +105,21 @@ class Users
             $dto->userDTO->address->street,
             $dto->userDTO->address->houseNumber,
             $dto->mimeType,
+            $dto->userDTO->isConfirmed,
         );
     }
 
+    public function isConfirmed(): ?bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): static
+    {
+        $this->isConfirmed = $isConfirmed;
+
+        return $this;
+    }
 
     public function getId(): ?Uuid
     {

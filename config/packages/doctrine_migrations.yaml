@@ -6,3 +6,4 @@ doctrine_migrations:
     enable_profiler: false
     migrations:
         - "App\\Store\\Connection\\migrations\\Version20231129103622"
+        - "App\\Store\\Connection\\migrations\\Version20231226073733"

@@ -4,7 +4,7 @@ services:
   mailhog:
     build: ./docker/mailhog
     ports:
-      - "1035:1035"
+      - "1035:1025"
       - "8025:8025"
 
   php-fpm:

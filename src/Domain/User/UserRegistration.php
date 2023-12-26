@@ -10,6 +10,7 @@ use App\Domain\User\Factory\DTO\CreateUserDto;
 use App\Domain\User\Factory\UserFactory;
 use App\Domain\User\Notification\DTO\RegistrationMessageDto;
 use App\Domain\User\Notification\RegistrationMessageInterface;
+use App\Domain\User\Store\ConfirmingUserInterface;
 use App\Domain\User\Store\DTO\SaveTempUserDto;
 use App\Domain\User\Store\DTO\SaveUserDto;
 use App\Domain\User\Store\DTO\UserDTO;
@@ -20,6 +21,7 @@ use App\Executor\Controller\User\DTO\UserRegisterRequestDto;
 use App\Store\User\SaveUserDtoDataMapper;
 use App\Store\User\TemporarySaveUserDto;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class UserRegistration
 {
@@ -28,8 +30,8 @@ class UserRegistration
         private UserFactory $userFactory,
         private LoggerInterface $storeLogger,
         private LoggerInterface $userFactoryLogger,
-        private TemporarySaveUserDtoInterface $temporarySaveUserDto,
         private RegistrationMessageInterface $registrationMessage,
+        private ConfirmingUserInterface $confirmingUser,
     ) {}
 
     public function prepareRegistration(UserRegisterDTO $dto)
@@ -37,24 +39,9 @@ class UserRegistration
         $createUserDto = CreateUserDto::createFromUserRegisterDto($dto);
         $user = $this->getUserFromUserFactory($createUserDto);
         $userDto = UserDTO::createFromUser($user);
-        $saveTempUserDto = new SaveTempUserDto($userDto, $createUserDto);
-        $this->runSaveTemporaryUserDto($saveTempUserDto);
         $this->runSendingMessage($userDto);
-    }
-
-    private function runSaveTemporaryUserDto(SaveTempUserDto $saveTempUserDto): void
-    {
-        $saveUserDto = new SaveUserDto(
-            $saveTempUserDto->userDto,
-            $saveTempUserDto->createUserDto->pathTempFileAvatar,
-            $saveTempUserDto->createUserDto->avatarMimeType
-        );
-        try {
-            $this->temporarySaveUserDto->save($saveUserDto);
-        } catch (\Throwable $exception) {
-            $this->storeLogger->error($exception->getMessage());
-            throw new SystemException("Системная ошибка");
-        }
+        $saveUserDto = new SaveUserDto($userDto, $dto->tempPathAvatar, $dto->avatarMimeType);
+        $this->runSaveUser($saveUserDto);
     }
 
     private function runSendingMessage(UserDTO $userDto): void
@@ -68,21 +55,19 @@ class UserRegistration
         }
     }
 
-    public function register(string $userId): void
+    public function register(Uuid $userId): void
     {
-        $saveUserDto = $this->getSaveUserDtoFromTemporarySaveUserDto($userId);
-        $this->runSaveUser($saveUserDto);
+        $this->runConfirmUser($userId);
     }
 
-    private function getSaveUserDtoFromTemporarySaveUserDto(string $userId): SaveUserDto
+    private function runConfirmUser(Uuid $userId): void
     {
         try {
-            $saveUserDto = $this->temporarySaveUserDto->pop($userId);
+            $this->confirmingUser->confirm($userId);
         } catch (\Throwable $exception) {
             $this->storeLogger->error($exception->getMessage());
-            throw new SystemException();
+            throw new SystemException;
         }
-        return $saveUserDto;
     }
 
     private function getUserFromUserFactory(CreateUserDto $dto): User

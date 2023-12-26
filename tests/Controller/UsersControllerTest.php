@@ -43,13 +43,12 @@ class UsersControllerTest extends WebTestCase
         $crawler = $client->request('POST', "/users/registration", $params, $files);
 
         $requestTemporaryUserDto = RequestTemporaryUserFilenameDto::createFromArray($params);
-        $temporaryFilename = $userGetter->getTemporaryFilename($requestTemporaryUserDto);
 
         $this->assertResponseStatusCodeSame(200);
-        $this->assertEquals($initialDataSize, $userGetter->getDataSize());
+        $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());
 
 
-        $client->request('GET', "/users/registration/{$temporaryFilename}");
+        $client->request('GET', "/users/registration/{$userGetter->getLast()->id}");
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals($initialDataSize + 1, $userGetter->getDataSize());
