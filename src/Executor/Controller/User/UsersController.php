@@ -96,7 +96,7 @@ class UsersController
     }
 
 
-    #[Route('/users/{id}')]
+    #[Route('/users/{id}', methods: ['GET'])]
     public function getUserById(
         Uuid $id,
     ): Response
