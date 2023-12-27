@@ -60,16 +60,16 @@ class PatchUser implements PatchUserInterface
     private function patchAddress(Users $user, ?PatchAddressDto $address): void
     {
         if (!is_null($address?->country)) {
-            $user->setLogin($address->country);
+            $user->setCountry($address->country);
         }
         if (!is_null($address?->city)) {
-            $user->setLogin($address->city);
+            $user->setCity($address->city);
         }
         if (!is_null($address?->street)) {
-            $user->setLogin($address->street);
+            $user->setStreet($address->street);
         }
         if (!is_null($address?->houseNumber)) {
-            $user->setLogin($address->houseNumber);
+            $user->setHouseNumber($address->houseNumber);
         }
     }
 

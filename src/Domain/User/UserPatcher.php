@@ -30,13 +30,13 @@ class UserPatcher
     {
         $result = $this->getViolationListFromValidation($patchUserDto);
         if ($result->count() > 0) {
-            throw new PatchValidationException($result);
+            throw new PatchValidationException;
         }
     }
 
     private function getViolationListFromValidation(PatchUserDto $patchUserDto): ConstraintViolationListInterface
     {
-        return $this->validator->validate($patchUserDto);
+        return $this->validator->validate([$patchUserDto, $patchUserDto->addressDto, $patchUserDto->profileDto]);
     }
 
     private function runPatchUser(PatchUserDto $patchUserDto): void
