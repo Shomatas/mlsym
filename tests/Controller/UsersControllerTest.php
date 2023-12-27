@@ -3,8 +3,10 @@
 namespace App\Tests\Controller;
 
 use App\Domain\User\Store\GetUserTestInterface;
+use App\Executor\Controller\User\DTO\PatchUserRequestDto;
 use App\Tests\Controller\DataProvider\UsersControllerTestDataProviderTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Uid\Uuid;
 
 class UsersControllerTest extends WebTestCase
 {
@@ -61,5 +63,34 @@ class UsersControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals($initialDataSize, $userGetter->getDataSize());
+    }
+
+    /**
+     * @test
+     * @dataProvider patchUserByIdDataProvider
+     */
+    public function patchUserById(Uuid $id,  PatchUserRequestDto $patchUserRequestDto): void
+    {
+        // TODO: Устранить баг с изменением данных в хранилище
+        $client = static::createClient();
+        self::bootKernel();
+        $container = static::getContainer();
+        $userGetter = $container->get(GetUserTestInterface::class);
+        $initialUserDto = $userGetter->get($id);
+        $client->request('PATCH', "/users/{$id}", [
+            'login' => $patchUserRequestDto->login,
+            'password' => $patchUserRequestDto->password,
+            'profile[firstname]' => $patchUserRequestDto->patchProfileRequestDto?->firstname,
+            'profile[lastname]' => $patchUserRequestDto->patchProfileRequestDto?->lastname,
+            'profile[age]' => $patchUserRequestDto->patchProfileRequestDto?->age,
+            'address[country]' => $patchUserRequestDto->patchAddressRequestDto?->country,
+            'address[city]' => $patchUserRequestDto->patchAddressRequestDto?->city,
+            'address[street]' => $patchUserRequestDto->patchAddressRequestDto?->street,
+            'address[house_number]' => $patchUserRequestDto->patchAddressRequestDto?->houseNumber,
+            'email' => $patchUserRequestDto->email,
+            'phone' => $patchUserRequestDto->phone,
+        ]);
+        $userDto = $userGetter->get($id);
+        $this->assertNotEquals($initialUserDto, $userDto);
     }
 }
