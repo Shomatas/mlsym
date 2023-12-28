@@ -132,6 +132,7 @@ class UsersController
         if ($constraintViolationList->count() > 0) {
             return new JsonResponse('Данные не валидны', Response::HTTP_BAD_REQUEST);
         }
+
         $patchUserDto = new PatchUserDto(
             $id,
             $patchUserRequestDto->login,

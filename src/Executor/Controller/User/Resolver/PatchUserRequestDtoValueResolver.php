@@ -25,15 +25,15 @@ class PatchUserRequestDtoValueResolver implements ValueResolverInterface
         $login = $request->get("login") ?: null;
         $password = $request->get("password") ?: null;
         $profile = new PatchProfileRequestDto(
-            $request->get("profile")["firstname"] ?? null,
-            $request->get("profile")["lastname"] ?? null,
-            $request->get("profile")["age"] ?? null,
+            $request->get("profile[firstname]") ?: null,
+            $request->get("profile[lastname]") ?: null,
+            $request->get("profile[age]") ?: null,
         );
         $address = new PatchAddressRequestDto(
-            $request->get("address")["country"] ?? null,
-            $request->get("address")["city"] ?? null,
-            $request->get("address")["street"] ?? null,
-            $request->get("address")["house_number"] ?? null,
+            $request->get("address[country]") ?: null,
+            $request->get("address[city]") ?: null,
+            $request->get("address[street]") ?: null,
+            $request->get("address[house_number]") ?: null,
         );
         $email = $request->get("email") ?: null;
         $phone = $request->get('phone') ?: null;

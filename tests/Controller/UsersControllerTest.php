@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Domain\User\Store\GetUserInterface;
 use App\Domain\User\Store\GetUserTestInterface;
 use App\Executor\Controller\User\DTO\PatchUserRequestDto;
 use App\Tests\Controller\DataProvider\UsersControllerTestDataProviderTrait;
@@ -71,11 +72,10 @@ class UsersControllerTest extends WebTestCase
      */
     public function patchUserById(Uuid $id,  PatchUserRequestDto $patchUserRequestDto): void
     {
-        // TODO: Устранить баг с изменением данных в хранилище
         $client = static::createClient();
         self::bootKernel();
         $container = static::getContainer();
-        $userGetter = $container->get(GetUserTestInterface::class);
+        $userGetter = $container->get(GetUserInterface::class);
         $initialUserDto = $userGetter->get($id);
         $client->request('PATCH', "/users/{$id}", [
             'login' => $patchUserRequestDto->login,

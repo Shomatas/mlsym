@@ -28,6 +28,7 @@ class GetUser implements GetUserTestInterface, GetUserInterface
     {}
     public function get(Uuid $id): UserDTO
     {
+        $this->entityManager->clear();
         $userData = $this->entityManager->getRepository(Users::class)->find($id);
 
         return new UserDTO(
